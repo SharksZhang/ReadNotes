@@ -52,6 +52,8 @@ select 会阻塞到某个分支可以继续执行为止，这时就会执行该�
 
 当 select 中的其它分支都没有准备好时，default 分支就会执行
 
+
+
 ```
 select {
 case i := <-c:
@@ -59,4 +61,42 @@ case i := <-c:
 default:
     // 从 c 中接收会阻塞时执行
 }
+```
+
+使用for无线循环和select可以实现向一个管道中一直写入值，另一个管道用来控制for循环的结束。
+
+```
+package main
+
+import (
+	"time"
+	"fmt"
+)
+
+/**
+1.time.Tick会返回一个管道，管道中每个固定时间写入当前时间
+2.time.After会在固定时间后在管道中写入时间
+3.记得死循环要返回。
+**/
+func main() {
+	tick := time.Tick(100 * time.Millisecond)
+	after := time.After(500 * time.Millisecond)
+
+	for {
+		select {
+		case i := <-tick:
+			fmt.Println("tick:[%v]", i)
+		case <-after:
+			fmt.Println("boom boom boom")
+			return
+		default:
+			fmt.Println("    .")
+			time.Sleep(50 * time.Millisecond)
+		}
+
+	}
+
+}
+
+
 ```
