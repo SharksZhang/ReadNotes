@@ -47,8 +47,70 @@ func (f MyFloat) Abs() float64 {
 接受者有两种类型，指针接受者和值接受者。指针接收者的方法可以修改接收者指向的值，值接收者的方法会对原始值的副本进行操作。方法经常需要修改它的接收者，指针接收者比值接收者更常用。
 
 同时，使用值接受者可以调用指针接受者的方法，使用指针接受者也可以调用值接受者的方法。golang会进行自动的转换。如果是指针，调用值接受者的方法，会先取值，然后使用值的副本再调用方法，不会改变接受者的值。而用值调用指针接受者的方法，会先取指针，所以会改变接受者的值。
+
 ```
-方法经常需要修改它的接收者，指针接收者比值接收者更常用
+package main
+
+import (
+"fmt"
+)
+
+type Vertex struct {
+	X, Y float64
+}
+
+func (v *Vertex) Scale_Pointer_reciever(f float64) {
+	v.X = v.X * f
+	v.Y = v.Y * f
+}
+
+func (v Vertex) Scale_value_reciever(f float64) {
+	v.X = v.X * f
+	v.Y = v.Y * f
+}
+
+
+func main() {
+	v_pointer := &Vertex{3, 4}
+	fmt.Printf("Before v_pointer.Scale_Pointer_reciever: %+v_pointer\n", v_pointer)
+	v_pointer.Scale_Pointer_reciever(5)
+	fmt.Printf("After v_pointer.Scale_Pointer_reciever: %+v_pointer\n", v_pointer)
+	fmt.Println()
+
+	v_value := Vertex{3, 4}
+	fmt.Printf("Before v_value.Scale_Pointer_reciever: %+v_pointer\n", v_value)
+	v_value.Scale_Pointer_reciever(5)
+	fmt.Printf("After v_value.Scale_Pointer_reciever: %+v_pointer\n", v_value)
+
+	fmt.Printf("call Scale_value_reciever\n")
+	fmt.Println()
+	v1_pointer := &Vertex{3, 4}
+	fmt.Printf("Before v1_value.Scale_value_reciever: %+v_pointer\n", v1_pointer)
+	v1_pointer.Scale_value_reciever(5)
+	fmt.Printf("After v1_value.Scale_value_reciever: %+v_pointer\n", v1_pointer)
+
+	fmt.Println()
+	v1_value := Vertex{3, 4}
+	fmt.Printf("Before v1_value.Scale_value_reciever: %+v_pointer\n", v1_pointer)
+	v1_value.Scale_value_reciever(5)
+	fmt.Printf("After v1_value.Scale_value_reciever: %+v_pointer\n", v1_pointer)
+
+}
+
+打印：
+Before v_pointer.Scale_Pointer_reciever: &{X:3 Y:4}_pointer
+After v_pointer.Scale_Pointer_reciever: &{X:15 Y:20}_pointer
+
+Before v_value.Scale_Pointer_reciever: {X:3 Y:4}_pointer
+After v_value.Scale_Pointer_reciever: {X:15 Y:20}_pointer
+call Scale_value_reciever
+
+Before v1_value.Scale_value_reciever: &{X:3 Y:4}_pointer
+After v1_value.Scale_value_reciever: &{X:3 Y:4}_pointer
+
+Before v1_value.Scale_value_reciever: &{X:3 Y:4}_pointer
+After v1_value.Scale_value_reciever: &{X:3 Y:4}_pointer
+
 ```
 
 **使用指针接收者的原因：**
@@ -65,6 +127,54 @@ func (f MyFloat) Abs() float64 {
 
 接口值调用方法时会执行其底层类型的同名方法。
 ```
+package main
+
+import (
+	"fmt"
+	"math"
+)
+
+type I interface {
+	M()
+}
+
+type T struct {
+	S string
+}
+
+func (t *T) M() {
+	fmt.Println(t.S)
+}
+
+type F float64
+
+func (f F) M() {
+	fmt.Println(f)
+}
+
+func main() {
+	var i I
+
+	i = &T{"Hello"}
+	describe(i)
+	i.M()
+
+	i = F(math.Pi)
+	describe(i)
+	i.M()
+}
+
+func describe(i I) {
+	fmt.Printf("(%v, %T)\n", i, i)
+}
+
+
+print：
+
+(&{Hello}, *main.T)
+Hello
+(3.141592653589793, main.F)
+3.141592653589793
 
 ```
 
