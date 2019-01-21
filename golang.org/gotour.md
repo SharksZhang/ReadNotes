@@ -1,7 +1,9 @@
 ###gotour
 
+[TOC]
 
 ### Methods and interfaces
+
 #### 方法
 Go 没有类。不过你可以为结构体类型定义方法。
 
