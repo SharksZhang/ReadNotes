@@ -97,3 +97,5 @@ NameError: name 'l' is not defined
 
 
 ## 第二部分 类型和运算
+
+####  4. 介绍python对象类型
