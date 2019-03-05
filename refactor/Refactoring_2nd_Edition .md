@@ -52,6 +52,26 @@ I use “**restructuring**” as a general term to  mean  any  kind  of  reorgan
 **adding functionality** :When  I  refactor,  I  make  a  point  of  not  adding functionality;  I  only  restructure  the  code.  I  don’t  add  any  tests  (unless  I  ﬁnd  a case I missed earlier); I only change tests when I have to accommodate a changein an interface.
 As I develop 
 
+### 2.3 Why Should We Refactor?
+
+ It  is  no  “silver bullet".Refactoring is a tool that can—and should—be used for several purposes
+  - Refactoring Improves the Design of Software
+      - Without  refactoring,  the  internal  design—the  architecture—of  software  tends  to decay.
+      - Poorly  designed  code  usually  takes  more  code  to  do  the  same  things.
+- Refactoring Makes Software Easier to Understand
+- Refactoring Helps Me Find Bugs
+- Refactoring Helps Me Program Faster
+
+### 2.4 When Should We Refactor?
+
+- The Rule of Three
+- Preparatory Refactoring—Making It Easier to Add a Feature
+- Comprehension Refactoring: Making Code Easier to Understand
+- Litter-Pickup Refactoring
+- Planned and Opportunistic Refactoring
+- Long-Term Refactoring
+- Refactoring in a Code Review
+
 
 
 
