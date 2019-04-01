@@ -165,7 +165,7 @@ Sadly, however, naming is one of the two hard things [mf-2h] in programming.So, 
 
 - Ninety-nine  percent  of  the  time,  all  you  have  to  do  to  shorten  a  function  is **Extract  Function** (106). Find parts of the function that seem to go nicely together and make a new one.
 - If  you  have  a  function  with  lots  of  parameters  and  temporary  variables,  you  end  up passing  so  many  parameters  to  the  extracted  method  that  the  result  is  scarcely more readable than the original.You can often use **Replace Temp with Query (178)** to  eliminate  the  temps.  Long  lists  of  parameters  can  be  slimmed  down  with Introduce  **Parameter  Object  (140)** and **Preserve  Whole  Object  (319)**.
-- If you’ve tried that and you still have too many temps and parameters, it’s time to get out the heavy artillery: Replace  **Function  with  Command  (337)**.
+- If you’ve tried that and you still have too many temps and parameters, it’s time to get out the heavy artillery: **Replace**  **Function  with  Command  (337)**.
 
 **How  do  you  identify  the  clumps  of  code  to  extract?**
 
@@ -182,8 +182,66 @@ Sadly, however, naming is one of the two hard things [mf-2h] in programming.So, 
 - If several parameters always  ﬁt  together,  combine  them  with  **Introduce  Parameter  Object  (140)**
 -  If  a  parameter is used as a ﬂag to dispatch different behavior, use **Remove Flag Argument (314)**
 
--  When multiple  functions  share  several  parameter  values.  Then,  you  can use Combine  Functions  into  Class  (144) to capture those common values as ﬁelds
+-  When multiple  functions  share  several  parameter  values.  Then,  you  can use **Combine  Functions  into  Class  (144)** to capture those common values as ﬁelds
 
 ### 3.5 Global Data
 
-### 
+The  problem  with  global  data  is  that  it  can  be modiﬁed from anywhere in the code base, and there’s no mechanism to discover which bit of code touched it. 
+
+The most obvious form of global data is **global variables**, but we also see this problem with **class variables and singletons.**
+
+- Our  key  defense  here  is  **Encapsulate  Variable  (132),**  which  is  always  our  ﬁrst
+  move when confronted with data that is open to contamination by any part of a
+  program.
+-  Then,  it’s  good  to  limit  its scope as much as possible by moving it within a class or module where only that module’s code can see it.
+
+### 3.6 Mutable Data
+
+- You can use **Encapsulate Variable (132)** to ensure that all updates occur through narrow functions that can be easier to monitor and evolve
+
+- If a variable is being updated to store different things, use **Split Variable (240)** both to keep them sepa-
+  rate  and  avoid  the  risky  update
+
+-  Try  as  much  as  possible  to  move  logic  out  of code that processes the update by using **Slide Statements (223)** and **Extract Function (106)** to separate the side-effect-free code from anything that performs the update.
+
+- In APIs, use **Separate Query from Modifier (306)** to ensure callers don’t need to call code that has side effects unless they really need to. 
+
+- We like to use **Remove Setting Method (331)** as soon as we can—sometimes, just trying to ﬁnd clients of a setter helps spot opportunities to reduce the scope of a variable
+
+- Mutable data that can be calculated elsewhere is particularly pungent.  **Replace Derived  Variable  with  Query  (248)**
+
+- Mutable  data  isn’t  a  big  problem  when  it’s  a  variable  whose  scope  is  just  a couple  of  lines—but  its  risk  increases  as  its  scope  grows.  Use  **Combine  Functions into Class (144)** or **Combine Functions into Transform (149)** to limit how much code needs to update a variable.
+
+-  If a variable contains some data with internal structure, it’s  usually  better  to  replace  the  entire  structure  rather  than  modify  it  in  place, using **Change  Reference  to  Value  (252).**
+
+  
+
+### 3.7 Divergent Change
+
+Divergent change occurs when one module is often changed in different ways for different reasons. 
+
+The database interaction and ﬁnancial processing problems are separate contexts, and we can make our programming life better by **moving such contexts into separate modules**. That way, when we have a change to one context, we only have to understand that one context and ignore the other
+
+context  boundaries  are usually unclear in the early days of a program and continue to shift as a software
+system’s capabilities change.
+
+- If  the  two  aspects  naturally  form  a  sequence—for  example,  you  get  data  from the database and then apply your ﬁnancial processing on it—then **Split Phase (154)** separates the two with a clear data structure between them.
+- If there’s more back-and-forth  in  the  calls,  then  create  appropriate  modules  and  use  **Move  Function(198)**  to  divide  the  processing  up.
+- If  functions  mix  the  two  types  of  processing within themselves, use Extract  Function  (106) to separate them before moving
+- If the  modules  are  classes,  then  Extract  Class  (182)  helps  formalize  how  to  do  the
+  split
+
+```
+不符合单一职责，分离关注点
+```
+
+### 3.8 Shotgun Surgery
+
+You whiff this when, **every time you make a change, you have to make a lot of little edits to a lot  of  different  classes.**
+
+- In  this  case,  you  want  to  use  **Move  Function  (198)**  and  Move  Field  (207)  to  put all the changes into a single module.
+- If you have a bunch of functions operating on similar data, use **Combine Functions into Class (144)**
+- If you have functions that are transforming or enriching a data structure, use **Combine Functions into Transform(149).**
+- **Split Phase (154)** is often useful here if the common functions can combine their output for a consuming phase of logic.
+- A useful tactic for shotgun surgery is to use inlining refactorings, such as **Inline Function (115)** or **Inline Class (186)**, to pull together poorly separated logic, then  use  extractions  to
+  break  it  up  into  more  sensible  pieces.
