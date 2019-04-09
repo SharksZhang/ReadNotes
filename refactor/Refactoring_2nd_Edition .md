@@ -227,9 +227,8 @@ system’s capabilities change.
 
 - If  the  two  aspects  naturally  form  a  sequence—for  example,  you  get  data  from the database and then apply your ﬁnancial processing on it—then **Split Phase (154)** separates the two with a clear data structure between them.
 - If there’s more back-and-forth  in  the  calls,  then  create  appropriate  modules  and  use  **Move  Function(198)**  to  divide  the  processing  up.
-- If  functions  mix  the  two  types  of  processing within themselves, use Extract  Function  (106) to separate them before moving
-- If the  modules  are  classes,  then  Extract  Class  (182)  helps  formalize  how  to  do  the
-  split
+- If  functions  mix  the  two  types  of  processing within themselves, use **Extract  Function  (106)** to separate them before moving
+- If the  modules  are  classes,  then  **Extract  Class  (182)**  helps  formalize  how  to  do  the split
 
 ```
 不符合单一职责，分离关注点
@@ -245,3 +244,104 @@ You whiff this when, **every time you make a change, you have to make a lot of l
 - **Split Phase (154)** is often useful here if the common functions can combine their output for a consuming phase of logic.
 - A useful tactic for shotgun surgery is to use inlining refactorings, such as **Inline Function (115)** or **Inline Class (186)**, to pull together poorly separated logic, then  use  extractions  to
   break  it  up  into  more  sensible  pieces.
+
+### 3.9 Feature Envy
+
+ A  classic  case  of  Feature  Envy  occurs  when  a  function  in  one  module spends  more  time  communicating  with  functions  or  data  inside  another  module than it does within its own module. 
+
+- The  function  clearly wants to be with the data, so use **Move Function (198)** to get it there.
+- Sometimes,only  a  part  of  a  function  suffers  from  envy,  in  which  case  use  **Extract  Function(106)** on the jealous bit, and **Move  Function  (198)** to give it a dream home.
+
+  Often,  a  function  uses  features  of several  modules,  so  which  one  should  it  live  with?
+
+-  This step is often made easier if you use Extract Function (106) to break the function into pieces that go into different places.
+
+**The fundamental rule of thumb is to put things together that**
+**change together.** Data and the behavior that references that data usually change together—but  there  are  exceptions.  When  the  exceptions  occur,  we  move  the behavior  to  keep  changes  in  one  place.  Strategy  and  Visitor  allow  you  to change  behavior  easily  because  they  isolate  the  small  amount  of  behavior  that needs to be overridden, at the cost of further indirection.
+
+### 3.10 Data Clumps
+
+特征：
+
+1. you’ll  see  the  same  three  or  four  data  items  together  in  lots  of  places:  **as  ﬁelds in a couple of classes, as parameters in many method signatures.**
+2. A good test is to consider deleting one of the data values. If you did this, would the others make any sense? If they don’t, it’s a sure sign that you have an object that’s dying to be born.
+
+action：
+
+1.  The  ﬁrst  step is  to  look  for  where  the  clumps  appear  as  ﬁelds.  Use  Extract  Class  (182)  on  the ﬁelds  to  turn  the  clumps  into  an  object
+2. Then  turn  your  attention  to  method signatures using Introduce  Parameter  Object  (140) or Preserve  Whole  Object  (319) to slim them down.
+3. You’ll notice that we advocate creating a class here, not a simple record structure.  You can now look for cases of **feature envy**,which will suggest behavior that  can  be  moved  into  your  new  classes.  We’ve  often  seen  this  as  a  powerful dynamic  that  creates  useful  classes  and  can  remove  a  lot  of  duplication  and  accelerate  future  development.
+
+### 3.11 Primitive Obsession
+
+1. You  can  move  out  of  the  primitive  cave  into  the  centrally  heated  world  of meaningful types by using **Replace Primitive with Object (174)**
+2. If the primitive is a type code controlling conditional behavior, use **Replace  Type  Code  with  Subclasses (362)** followed by **Replace  Conditional  with  Polymorphism  (272).**
+3. Groups  of  primitives  that  commonly  appear  together  are  data  clumps  and should be civilized with **Extract  Class  (182)** and Introduce  Parameter  Object  (140).
+
+### 3.12 Repeated Switches
+
+ So  we  now  focus  on  the  repeated  switch,  where  the  same  conditional switching logic (either in a switch/case statement or in a cascade of if/else statements)  pops  up  in  different  places.  
+
+**The  problem  with  such  duplicate switches  is  that,  whenever  you  add  a  clause,  you  have  to  ﬁnd  all  the  switches and  update  them**
+
+Against  the  dark  forces  of  such  repetition,  polymorphism provides an elegant weapon for a more civilized codebase.
+
+### 3.13 Loops
+
+ We  ﬁnd  that  pipeline  operations,  such  as ﬁlter and map, help us quickly see the elements that are included in the processing and what is done with them.
+
+-  Replace Loop with Pipeline(231) 
+
+### 3.14 Lazy Element 
+
+It may be a function that’s named the same as its body code reads, or a class that is essentially one simple function.
+
+1.  using Inline Function (115) or Inline Class (186)
+
+2. With inheritance, you can use Collapse  Hierarchy  (380)
+
+### 3.15 Speculative Generality
+
+1. If you have abstract classes that aren’t doing much, use **Collapse Hierarchy (380).**
+2. Unnecessary delegation can be removed with **Inline Function (115)** and Inline Class(186).
+3. Functions  with  unused  parameters  should  be  subject  to  **Change  Function Declaration  (124)**  to  remove  those  parameters.  You  should  also  apply  **Change Function  Declaration  (124)**  to  remove  any  unneeded  parameters,  which  often  get tossed in for future variations that never come to pass.
+4. Speculative generality can be spotted when the only users of a function or class are test cases. If you ﬁnd such an animal, delete the test case and apply **Remove Dead  Code  (237).**
+
+### 3.16 Temporary Field
+
+Sometimes  you  see  a  class  in  which  a  ﬁeld  is  set  only  in  certain  circumstances.Such code is difﬁcult to understand, because you expect an object to need all ofits  ﬁelds.  Trying  to  understand  why  a  ﬁeld  is  there  when  it  doesn’t  seem  to  be used can drive you nuts.
+
+1. Use  **Extract  Class  (182)**  to  create  a  home  for  the  poor  orphan  variables
+2. Use **Move Function (198)** to put all the code that concerns the ﬁelds into this new class.
+3. You may also be able to eliminate conditional code by using Introduce Special Case(289) to create an alternative class for when the variables aren’t valid.
+
+### 3.17 Message Chains
+
+You see message chains when a client asks one object for another object, which the client then asks for yet another object, which the client then asks for yet another  another  object,  and  so  on.  You  may  see  these  as  a  long  line  of  getThis methods,  or  as  a  sequence  of  temps.
+
+ Navigating  this  way  means  the  client  is coupled  to  the  structure  of  the  navigation.  Any  change  to  the  intermediate relationships causes the client to have to change.
+
+- The move to use here is Hide Delegate (189). You can do this at various points in the chain. In principle, you can do this to every object in the chain, but doing this often turns every intermediate object into a middle man.
+- 
+  1. Often, a better alternative is to see what the resulting object is used for. See whether you can use **Extract  Function  (106)**  to  take  a  piece  of  the  code  that  uses  it  and  then  **Move Function  (198)**  to  push  it  down  the  chain. 
+  2.  If  several  clients  of  one  of  the  objects in the chain want to navigate the rest of the way, add a method to do that.
+
+### 3.18 Middle Man
+
+ You look at a class’s interface and ﬁnd half the methods are delegating to this other class
+
+1. After a while, it is time to use Remove Middle Man (192) and talk to the object that really knows what’s going on.
+2. If only a  few  methods  aren’t  doing  much,  use  **Inline  Function  (115)**  to  inline  them  into the  caller. 
+3.  If  there  is  additional  behavior,  you  can  use  Replace  Superclass  with Delegate  (399) or Replace  Subclass  with  Delegate  (381) to fold the middle man into the  real  object.  That  allows  you  to  extend  behavior  without  chasing  all  that delegation.
+
+### 3.19 Insider Trading
+
+ To  make  things work, some trade has to occur, but **we need to reduce it to a minimum and keep**
+**it all above board**.
+
+1. Modules that whisper to each other by the coffee machine need to be separated by  using  **Move  Function  (198)**  and  **Move  Field  (207)**  to  reduce  the  need  to  chat
+2. If modules  have  common  interests,  try  to  create  a  third  module  to  keep  that commonality in a well-regulated  vehicle, or use **Hide Delegate (189)** to make another module act as an intermediary.
+
+3. Inheritance  can  often  lead  to  collusion.  Subclasses  are  always  going  to  know more about their parents than their parents would like them to know. If it’s time to leave home, apply **Replace Subclass with Delegate (381)** or **Replace Superclass with Delegate  (399)**.
+
+### 3.20 Large Class
