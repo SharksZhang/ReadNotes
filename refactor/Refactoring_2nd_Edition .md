@@ -254,10 +254,11 @@ You whiff this when, **every time you make a change, you have to make a lot of l
 
   Often,  a  function  uses  features  of several  modules,  so  which  one  should  it  live  with?
 
--  This step is often made easier if you use Extract Function (106) to break the function into pieces that go into different places.
+-  This step is often made easier if you use **Extract Function (106)** to break the function into pieces that go into different places.
 
-**The fundamental rule of thumb is to put things together that**
-**change together.** Data and the behavior that references that data usually change together—but  there  are  exceptions.  When  the  exceptions  occur,  we  move  the behavior  to  keep  changes  in  one  place.  Strategy  and  Visitor  allow  you  to change  behavior  easily  because  they  isolate  the  small  amount  of  behavior  that needs to be overridden, at the cost of further indirection.
+**The fundamental rule of thumb is to put things together thatchange together.** 
+
+Data and the behavior that references that data usually change together—but  there  are  exceptions.  When  the  exceptions  occur,  we  move  the behavior  to  keep  changes  in  one  place.  Strategy  and  Visitor  allow  you  to change  behavior  easily  because  they  isolate  the  small  amount  of  behavior  that needs to be overridden, at the cost of further indirection.
 
 ### 3.10 Data Clumps
 
@@ -313,7 +314,7 @@ Sometimes  you  see  a  class  in  which  a  ﬁeld  is  set  only  in  certain 
 
 1. Use  **Extract  Class  (182)**  to  create  a  home  for  the  poor  orphan  variables
 2. Use **Move Function (198)** to put all the code that concerns the ﬁelds into this new class.
-3. You may also be able to eliminate conditional code by using Introduce Special Case(289) to create an alternative class for when the variables aren’t valid.
+3. You may also be able to eliminate conditional code by using **Introduce Special Case(289)** to create an alternative class for when the variables aren’t valid.
 
 ### 3.17 Message Chains
 
@@ -321,7 +322,7 @@ You see message chains when a client asks one object for another object, which t
 
  Navigating  this  way  means  the  client  is coupled  to  the  structure  of  the  navigation.  Any  change  to  the  intermediate relationships causes the client to have to change.
 
-- The move to use here is Hide Delegate (189). You can do this at various points in the chain. In principle, you can do this to every object in the chain, but doing this often turns every intermediate object into a middle man.
+- The move to use here is **Hide Delegate (189).** You can do this at various points in the chain. In principle, you can do this to every object in the chain, but doing this often turns every intermediate object into a middle man.
 - 
   1. Often, a better alternative is to see what the resulting object is used for. See whether you can use **Extract  Function  (106)**  to  take  a  piece  of  the  code  that  uses  it  and  then  **Move Function  (198)**  to  push  it  down  the  chain. 
   2.  If  several  clients  of  one  of  the  objects in the chain want to navigate the rest of the way, add a method to do that.
@@ -345,3 +346,54 @@ You see message chains when a client asks one object for another object, which t
 3. Inheritance  can  often  lead  to  collusion.  Subclasses  are  always  going  to  know more about their parents than their parents would like them to know. If it’s time to leave home, apply **Replace Subclass with Delegate (381)** or **Replace Superclass with Delegate  (399)**.
 
 ### 3.20 Large Class
+
+When a class is trying to do too much, it often shows up as too many ﬁelds. When a class has too many ﬁelds, duplicated code cannot be far behind.
+
+1. You can **Extract  Class  (182)** to bundle a number of the variables. More generally, common preﬁxes or sufﬁxes for some subset of the variables in  a  class  suggest  the  opportunity  for  a  component.
+2. If  the  component  makes sense  with  inheritance,  you’ll  ﬁnd  **Extract  Superclass  (375)**  or  **Replace  Type  Code with  Subclasses  (362)** (which essentially is extracting a subclass) are often easier.
+3. **Sometimes  a  class  does  not  use  all  of  its  ﬁelds  all  of  the  time**.  If  so,  you  may be able to do these extractions many times.
+4. As with a class with too many instance variables, a class with too much code is a prime breeding ground for duplicated code, chaos, and death. **The simplest solution  (have  we  mentioned  that  we  like  simple  solutions?)  is  to  eliminate  redundancy  in  the  class  itself**.  If  you  have  ﬁve  hundred-line  methods  with  lots  of code in common, you may be able to turn them into ﬁve ten-line methods with another ten two-line methods extracted from the original.
+5. The  clients  of  such  a  class  are  often  the  best  clue  for  splitting  up  the  class.**Look  at  whether  clients  use  a  subset  of  the  features  of  the  class**.  Each  subset  is a possible separate class. Once you’ve identiﬁed a useful subset, use **Extract Class (182)**,  **Extract  Superclass  (375)**,  or  **Replace  Type  Code  with  Subclasses  (362)**  to  break
+   it out.
+
+### 3.21 Alternative Classes with Different Interfaces
+
+One  of  the  great  beneﬁts  of  using  classes  is  the  support  for  substitution,  allowing one class to swapin for another in times of need. But this only works if their interfaces are the same.
+
+1. But this only works if their interfaces are the same. Use **Change  Function  Declaration  (124)** to make functions match  up.
+2.  keep  using  **Move  Function  (198)**  to move behavior into classes until the protocols match. 
+3. If this leads to duplication, you may be able to use Extract  Superclass  (375) to atone.
+
+### 3.22 Data Class
+
+These are classes that have ﬁelds, getting and setting methods for the ﬁelds, and nothing else. Such classes are dumb data holders and are often being manipulate in  far  too  much  detail  by  other  classes. 
+
+1.  In  some  stages,  these  classes  may  have public ﬁelds. If so, you should immediately apply **Encapsulate Record (162)** before anyone notices. Use **Remove Setting Method (331)** on any ﬁeld that should not be changed.
+
+2. Look  for  where  these  getting  and  setting  methods  are  used  by  other  classes. Try to use **Move Function (198)** to move behavior into the data class. If you can’t move  a  whole  function,  use  **Extract  Function  (106)**  to  create  a  function  that  can be moved.
+
+A  key characteristic  of  such  a  result  record  is  that  it’s  immutable  (at  least  in  practice).Immutable   ﬁelds   don’t   need   to   be   encapsulated   and   information   derived from immutable data can be represented as ﬁelds rather than getting methods.
+
+### 3.23 Refused Bequest
+
+Subclasses get to inherit the methods and data of their parents. But what if they don’t want or need what they are given? They are given all these great gifts and pick just a few to play with.
+
+1. The  traditional  story  is  that  this  means  the  hierarchy  is  wrong.  You  need  to create a new sibling class and use **Push  Down  Method  (359)** and **Push  Down  Field (361)** to push all the unused code to the sibling. 
+2.  We don’t mind refusing implementations—but refusing interface gets us on our high horses. In this case,  however,  don’t  ﬁddle  with  the  hierarchy;  you  want  to  gut  it  by  applying **Replace  Subclass  with  Delegate  (381)** or **Replace  Superclass  with  Delegate  (399).**
+
+### 3.24 Comments
+
+The reason we mention comments here is that comments are often used as a deodorant.  It’s  surprising  how  often  you  look  at  thickly  commented  code  and  notice that the comments are there because the code is bad.
+
+**When   you   feel   the   need   to write  a  comment,  ﬁrst  try  to refactor  the  code  so  that  any comment becomes superﬂuous.**
+
+1. If you need a comment to explain what a block of code does, try **Extract Function(106)**.
+2. If the method is already extracted but you still need a comment to explain what  it  does,  use  **Change  Function  Declaration  (124)**  to  rename  it.
+3. If  you  need  to state  some  rules  about  the  required  state  of  the  system,  use  **Introduce  Assertion(302)**.
+
+## 4. Building Tests
+
+### 4.1 The Value of Self-Testing Code
+
+1.  Some time is spent ﬁguring out what ought to be going on, some time is spent designing, but most time is spent debugging.
+2.  If  I  added  a  bug  that was  caught  by  a  previous  test,  it  would  show  up  as  soon  as  I  ran  that  test.  The test  had  worked  before,  so  I  would  know  that  the  bug  was  in  the  work  I  had done since I last tested. 
