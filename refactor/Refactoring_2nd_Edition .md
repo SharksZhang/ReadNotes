@@ -191,11 +191,12 @@ The  problem  with  global  data  is  that  it  can  be modiﬁed from anywhere 
 The most obvious form of global data is **global variables**, but we also see this problem with **class variables and singletons.**
 
 - Our  key  defense  here  is  **Encapsulate  Variable  (132),**  which  is  always  our  ﬁrst
-  move when confronted with data that is open to contamination by any part of a
-  program.
+  move when confronted with data that is open to contamination by any part of a program.
 -  Then,  it’s  good  to  limit  its scope as much as possible by moving it within a class or module where only that module’s code can see it.
 
 ### 3.6 Mutable Data
+
+  I can update some data here, not realizing that another part of the software expects something  different  and  now  fails—a  failure  that’s  particularly  hard  to  spot  if  it only happens under rare conditions. 
 
 - You can use **Encapsulate Variable (132)** to ensure that all updates occur through narrow functions that can be easier to monitor and evolve
 
@@ -331,7 +332,7 @@ You see message chains when a client asks one object for another object, which t
 
  You look at a class’s interface and ﬁnd half the methods are delegating to this other class
 
-1. After a while, it is time to use Remove Middle Man (192) and talk to the object that really knows what’s going on.
+1. After a while, it is time to use **Remove Middle Man (192)** and talk to the object that really knows what’s going on.
 2. If only a  few  methods  aren’t  doing  much,  use  **Inline  Function  (115)**  to  inline  them  into the  caller. 
 3.  If  there  is  additional  behavior,  you  can  use  Replace  Superclass  with Delegate  (399) or Replace  Subclass  with  Delegate  (381) to fold the middle man into the  real  object.  That  allows  you  to  extend  behavior  without  chasing  all  that delegation.
 
@@ -397,3 +398,84 @@ The reason we mention comments here is that comments are often used as a deodora
 
 1.  Some time is spent ﬁguring out what ought to be going on, some time is spent designing, but most time is spent debugging.
 2.  If  I  added  a  bug  that was  caught  by  a  previous  test,  it  would  show  up  as  soon  as  I  ran  that  test.  The test  had  worked  before,  so  I  would  know  that  the  bug  was  in  the  work  I  had done since I last tested. 
+
+#### 4.2 Test Example
+
+- Always  make  sure  a  test  will fail when it should.通过测试失败保证测试一定能够跑到待覆盖的代码。
+- My focus is to test the areas that I’m most worried about going wrong.
+-  building a fresh ﬁxture every  time 
+- Most of the updates are simple setters, and I don’t usually bother to test those as there’s little chance they will be the source of a bug.
+- There  is  an  implicit  fourth  phase  that’s  usually  not mentioned:  teardown.
+-   it’s  wise  to  have  only  a  single  verify  statement  in  each  it clause，  I  feel  the  two  are  closely  enough  connected  that  I’m  happy  to  have  them in  the  same  test.
+- Think  of  the  boundary  conditions under which things might go wrong and concentrate your tests there.
+-  but  test  coverage  analysis  is only good for identifying untested areas of the code, not for assessing the quality of a test suite.
+- When  you  get  a  bug  report, start by writing a unit test that exposes the bug.
+
+### 5. Introducing the Catalog
+
+- I  emphasize  the  safe  way  of  doing  the  refactoring—which is to take very small steps and test after every one. At work, I usually take larger steps  than  some  of  the  baby  steps described,  but  if  I  run  into  a  bug,  I  back  out the last step and take the smaller steps. 
+-  It’s  likely  you’ll  vary  them  as you get more practice in refactoring, and that’s ﬁne. Just remember that the key is to take small steps—and the trickier the situation, the smaller the steps.
+
+#### 5.1 The Choice of Refactorings
+
+
+
+
+
+### 6. A First Set of Refactorings
+
+ a set of refactorings that I consider the most useful to learn ﬁrst.
+
+1. Probably the **most common refactoring** I do is extracting code into a function(**Extract  Function  (106)**)  or  a  variable  (**Extract  Variable  (119)**).  the inverses of those two (**Inline  Function  (115)** and **Inline  Variable  (123))**
+2. Extraction is all about **giving names,** and I often need to change the names as I  learn.  **Change  Function  Declaration  (124)**  changes  names  of  functions;  I  also use that refactoring to add or remove a function’s arguments. For variables, I use **Rename Variable (137)**, which relies on **Encapsulate Variable (132)**. When changing function  arguments,  I  often  ﬁnd  it  useful  to  combine  a  common  clump  of arguments into a single object with **Introduce  Parameter  Object  (140)**.
+3. Forming  and  naming  functions  are  essential  low-level  refactorings—but,  once created, it’s necessary to group functions into higher-level modules. I use **Combine Functions into Class (144)** to group functions, together with the data they operate on, into a class.  Another path I take is to combine them into a transform **(Combine Functions  into  Transform  (149)),**  **which  is  particularly handy  with  read-only  data.**At a step further in scale, I can often form these modules into **distinct processing phases** using **Split  Phase  (154).**
+
+#### 6.1 Extract Function
+
+##### 6.1.1 Motivation
+
+  The  argument  that  makes  most  sense  to  me,  however,  is **the separation between intention and implementation**.
+
+1.  If you have to spend effort looking  at  a  fragment  of  code  and  ﬁguring  out  what  it’s  doing,  then  you  should extract it into a function and name the function after the “what.”
+2.  A  comment  is  often  a  good  hint  for  the  name  of  the function when I extract that fragment.
+
+##### 6.1.2 Mechanics
+
+1. Create  a  new  function,  and  name  it  after  the  intent  of  the  function  (name it by what it does, not by how it does it).
+2. Copy  the  extracted  code  from  the  source  function  into  the  new  target function.
+3. Scan the extracted code for references to any variables that are local in scope to  the  source  function  and  will  not  be  in  scope  for  the  extracted  function. Pass them as parameters.
+
+   - If  a  variable  is  only  used  inside  the  extracted  code  but  is  declared  outside,  move the declaration into the extracted code.
+   - Any  variables  that  are  assigned  to  need  more  care  if  they  are  passed  by  value.  If there’s  only  one  of  them,  I  try  to  treat  the  extracted  code  as  a  query  and  assign the result to the variable concerned.
+   - ,I ﬁnd that too many local variables are being assigned by the extracted code.  It’s  better  to  abandon  the  extraction  at  this  point.  When  this  happens,  I consider other refactorings such as Split  Variable  (240) or Replace  Temp  with  Query (178) to simplify variable usage and revisit the extraction later.
+4. Compile after all variables are dealt with
+5. Replace  the  extracted  code  in  the  source  function  with  a  call  to  the  target function.
+6. Test.
+
+
+
+#### 6.2 Inline Function
+
+##### 6.2.1 Motivation
+
+- the  code  into  something  that  is  just  as  clear  as  the  name
+-  I have a group of functions that seem badly factored. I can inline them all into one big function and then reextract the functions the way I prefer
+- I  commonly  use  Inline  Function  when  I  see  code  that’s  using  too  much indirection
+
+
+
+#### 6.3 Extract Variable
+
+##### 6.2.1 Motivation
+
+If I’m considering Extract Variable, it means I want to add a name to an expression  in  my  code. If it’s only meaningful within the function I’m working on, then Extract Variable is a good choice—but if it makes sense in a broader context, I’ll  consider  making  the  name  available  in  that  broader  context,  usually  as  a
+function. 
+
+
+
+##### 6.1.3 Mechanics
+
+- Ensure that the expression you want to extract does not have side effects.
+- Declare an immutable variable. Set it to a copy of the expression you want to name.
+- Replace the original expression with the new variable.
+- Test.
