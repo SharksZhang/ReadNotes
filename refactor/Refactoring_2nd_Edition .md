@@ -270,8 +270,8 @@ Data and the behavior that references that data usually change together—but  t
 
 action：
 
-1.  The  ﬁrst  step is  to  look  for  where  the  clumps  appear  as  ﬁelds.  Use  Extract  Class  (182)  on  the ﬁelds  to  turn  the  clumps  into  an  object
-2. Then  turn  your  attention  to  method signatures using Introduce  Parameter  Object  (140) or Preserve  Whole  Object  (319) to slim them down.
+1.  The  ﬁrst  step is  to  look  for  where  the  clumps  appear  as  ﬁelds.  Use  **Extract  Class  (182)**  on  the ﬁelds  to  turn  the  clumps  into  an  object
+2. Then  turn  your  attention  to  method signatures using **Introduce  Parameter  Object  (140)** or **Preserve  Whole  Object  (319)** to slim them down.
 3. You’ll notice that we advocate creating a class here, not a simple record structure.  You can now look for cases of **feature envy**,which will suggest behavior that  can  be  moved  into  your  new  classes.  We’ve  often  seen  this  as  a  powerful dynamic  that  creates  useful  classes  and  can  remove  a  lot  of  duplication  and  accelerate  future  development.
 
 ### 3.11 Primitive Obsession
@@ -466,16 +466,120 @@ The reason we mention comments here is that comments are often used as a deodora
 
 #### 6.3 Extract Variable
 
-##### 6.2.1 Motivation
+##### 6.3.1 Motivation
 
-If I’m considering Extract Variable, it means I want to add a name to an expression  in  my  code. If it’s only meaningful within the function I’m working on, then Extract Variable is a good choice—but if it makes sense in a broader context, I’ll  consider  making  the  name  available  in  that  broader  context,  usually  as  a
-function. 
+ **they give me an ability to name a part of a more complex piece of logic**
+
+If I’m considering Extract Variable, it means I want to add a name to an expression  in  my  code. **If it’s only meaningful within the function I’m working on, then Extract Variable is a good choice**—but if it makes sense in a broader context, I’ll  consider  making  the  name  available  in  that  broader  context,  usually  as  a function. 
 
 
 
-##### 6.1.3 Mechanics
+The  downside  of  promoting  the  name  to  a  broader  context  is  extra  effort.  If it’s  signiﬁcantly  more  effort,  I’m  likely  to  leave  it  till  later  when  I  can  use **Replace  Temp  with  Query  (178).** But if it’s easy, I like to do it now so the name is immediately  available  in  the  code.  As  a  good  example  of  this,  if  I’m  working  in a class, then **Extract  Function  (106)** is very easy to do.
+
+
+
+##### 6.3.2 Mechanics
 
 - Ensure that the expression you want to extract does not have side effects.
 - Declare an immutable variable. Set it to a copy of the expression you want to name.
 - Replace the original expression with the new variable.
 - Test.
+
+#### 6.4 Inline Variable
+
+##### 6.4.1 Motivation
+
+1.  But sometimes, the name doesn’t really communicate more than  the  expression  itself.
+
+2.  you  may  ﬁnd  that  a  variable  gets  in the  way  of  refactoring  the  neighboring  code.
+
+##### 6.4.2 Mechanics
+
+- Check that the right-hand side of the assignment is free of side effects.
+- If the variable isn’t already declared immutable, do so and test.
+- This checks that it’s only assigned to once.
+- Find  the  ﬁrst  reference  to  the  variable  and  replace  it  with  the  right-handside of the assignment.
+- Test.
+- Repeat replacing references to the variable until you’ve replaced all of them.
+- Remove the declaration and assignment of the variable.
+- Test.
+
+#### 6.5  Change Function Declaration
+
+##### 6.5.1 Motivation 
+
+1. The  most  important  element  of  such  a  joint  is  the  name  of  the  function.  **A good name allows me to understand what the function does** when I see it called, without seeing the code that deﬁnes its implementation.
+
+2. 有时候需要保持整個函數接口的穩定性需要把整个参数对象传入，有时候为了减小依赖只传递单独的字段。
+
+##### 6.5.2 Mechanics
+
+**Simple Mechanics**
+
+- If you’re removing a parameter, ensure it isn’t referenced in the body of the function.
+- Change the method declaration to the desired declaration.
+- Find  all  references  to  the  old  method  declaration,  update  them  to  the new one.
+- Test.
+
+**Migration Mechanics**
+
+- If  necessary,  refactor  the  body  of  the  function  to  make  it  easy  to  do  the following extraction step.
+- Use Extract  Function  (106) on the function body to create the new function.
+  - If the new function will have the same name as the old one, give the new function a temporary name that’s easy to search for.
+- If  the  extracted  function  needs  additional  parameters,  use  the  simple mechanics to add them.
+- Test.
+- Apply Inline  Function  (115) to the old function.
+- If  you  used  a  temporary  name,  use  Change  Function  Declaration  (124)  again to restore it to the original name.
+- Test.
+
+自动化工具可以实现
+
+#### 6.6 Encapsulate Variable
+
+##### 6.6.1 Motivation 
+
+1. 函数可以在不改变其引用位置的情况下重构，而数据不可以。So  if  I  want  to  move  widely  accessed  data,  often  the  best  approach  is  to  ﬁrst encapsulate  it  by  routing  all  its  access  through functions.
+2.  It provides a clear point to monitor changes and use of the data; I can easily add validation or consequential logic  on  the  updates. 
+3.   It  is  my  habit  to  make  all  mutable  data  encapsulated  like this  and  only  accessed  through  functions  if  its  scope  is  greater  than  a  single function.Whenever I see a public ﬁeld, I consider using Encapsulate  Variable  (in  that  case  often  called  Encapsulate  Field)  to  **reduce  its visibility.**
+
+##### 6.6.2 Mechanics
+
+- Create encapsulating functions to access and update the variable.
+- Run static checks.
+- For  each  reference  to  the  variable,  replace  with  a  call  to  the  appropriate encapsulating function. Test after each replacement.
+- Restrict the visibility of the variable.
+  - Sometimes  it’s  not  possible  to  prevent  access  to  the  variable.  If  so,  it  may  be useful to detect any remaining references by renaming the variable and testing.
+- Test.
+- If the value of the variable is a record, consider Encapsulate  Record  (162).
+
+#### 6.7 Rename Variable
+
+##### 6.7.1 Motivation
+
+##### 6.7.2 Mechanics
+
+- If the variable is used widely, consider Encapsulate  Variable  (132).
+- Find all references to the variable, and change every one.
+  - If there are references from another code base, the variable is a published variable, and you cannot do this refactoring.
+  - If the variable does not change, you can copy it to one with the new name, then change gradually, testing after each change.
+- Test.
+
+#### 6.8 Introduce Parameter Object 
+
+##### 6.8.1 Motivation
+
+1. Grouping  data  into  a  structure  is  valuable  because  it  makes  explicit  the  relationship  between  the  data  items.
+
+2. It  reduces  the  size  of  parameter  lists  for  any function that uses the new structure.
+3. It helps consistency since all functions that use the structure will use the same names to get at its elements.
+4. 可以进一步讲方法和数据绑定起来成为新的类
+
+##### 6.8.2 Mechanics
+
+- If there isn’t a suitable structure already, create one.
+  - I prefer to use a class, as that makes it easier to group behavior later on. I usually like to ensure these structures are value objects [mf-vo].
+- Test.
+- Use  **Change  Function  Declaration  (124)**  to  add  a  parameter  for  the  new structure.
+- Test.
+- Adjust each caller to pass in the correct instance of the new structure. Test after each one.
+- For  each  element  of  the  new  structure,  replace  the  use  of  the  original parameter with the element of the structure. Remove the parameter. Test.
