@@ -579,7 +579,119 @@ The  downside  of  promoting  the  name  to  a  broader  context  is  extra  eff
 - If there isn’t a suitable structure already, create one.
   - I prefer to use a class, as that makes it easier to group behavior later on. I usually like to ensure these structures are value objects [mf-vo].
 - Test.
-- Use  **Change  Function  Declaration  (124)**  to  add  a  parameter  for  the  new structure.
+- Use  **Change  Function  Declaration  (124)**  to  add  a  parameter  for  the  new structure.在原有调用位置先传入空值
 - Test.
 - Adjust each caller to pass in the correct instance of the new structure. Test after each one.
 - For  each  element  of  the  new  structure,  replace  the  use  of  the  original parameter with the element of the structure. Remove the parameter. Test.
+
+
+
+#### 6.9 Combine Functions into Class
+
+##### 6.9.1 Motivation
+
+When  I  see  a  group  of  functions  that  o**perate  closely together  on  a  common body of data** (usually passed **as arguments to the function call**), I see an opportunity  to  form  a  class. 
+
+1. Using  a  class  makes  the  common  environment  that  these functions share more explicit
+2. allows me to simplify function calls inside the object by  removing  many  of  the  arguments,
+3.   provides  a  reference  to  pass  such  an object to other parts of the system.
+4. this refactoring also provides a good opportunity to identify other bits of computation and refactor them into methods on the new class
+
+##### 6.9.2 Mechanics
+
+- Apply Encapsulate Record (162) to the common data record that the functions share.
+  - If  the  data  that  is  common  between  the  functions  isn’t  already  grouped  into  a record  structure,  use  Introduce  Parameter  Object  (140)  to  create  a  record  to  group it together.
+- Take  each  function  that  uses  the  common  record  and  use  Move  Function (198) to move it into the new class.
+  - Any  arguments  to  the  function  call  that  are  members  can  be  removed  from  the
+    argument list.
+- Each  bit  of  logic  that  manipulates  the  data  can  be  extracted  with  Extract Function  (106) and then moved into the new class.
+
+#### 6.10 Combine Functions into Transform
+
+##### 6.10.1 Motivation
+
+One  of  the  reasons  I  like  to  do  combine  functions  is  to  avoid  duplication  of the derivation logic. I can do that just by using Extract Function (106) on the logic, but it’s often difﬁcult to ﬁnd the functions unless they are kept close to the data structures  they  operate  on.  Using  a  transform  (or  a  class)  makes  it  easy  to  ﬁnd and use them.
+
+##### 6.10.2 Mechanics
+
+- Create  a  transformation  function  that  takes  the  record  to  be  transformed and returns the same values.
+  - This will usually involve a deep copy of the record. It is often worthwhile to write a test to ensure the transform does not alter the original record.
+- Pick some logic and move its body into the transform to create a new ﬁeld in the record. Change the client code to access the new ﬁeld.
+  - If the logic is complex, use Extract  Function  (106) ﬁrst.
+- Test.
+- Repeat for the other relevant functions.
+
+#### 6.11 Split Phase
+
+##### 6.11.1 Motivation
+
+1. When  I  run  into  code  that’s  dealing  with  two  different  things,  I  look  for  a  way to split it into separate modules. 
+2. I endeavor to make this split because, if I need to make a change, I can deal with each topic separately and not have to hold both in my head together. 
+3.  The best clue is when different stages of the fragment use different sets of data and functions. By turning them  into  separate  modules  I  can  make  this  difference  explicit,  revealing  the difference in the code.
+
+##### 6.11.2 Motivation
+
+- Extract the second phase code into its own function.
+- Test.
+- Introduce  an  intermediate  data  structure  as  an  additional  argument  to  the extracted function.
+
+- Test.
+- Examine each parameter of the extracted second phase. If it is used by ﬁrst phase, move it to the intermediate data structure. Test after each move.
+  - Sometimes,  a  parameter  should  not  be  used  by  the  second  phase.  In  this  case, extract the results of each usage of the parameter into a ﬁeld of the intermediate data structure and use Move Statements to Callers (217) on the line that populates it.
+- Apply Extract Function (106) on the ﬁrst-phase code, returning the intermediate data structure.
+  - It’s also reasonable to extract the ﬁrst phase into a transformer object.
+
+### 7. Encapsulation
+
+Data structures are the most common secrets, and I can hide data structures by encapsulating them with **Encapsulate Record (162)** and **Encapsulate Collection (170)**.Even primitive data values can be encapsulated with **Replace Primitive with Object(174)**
+
+ Temporary variables often get in the way of refactoring,  Using  **Replace  Temp  with  Query  (178)**  is  a  great  help here.
+
+Classes  were  designed  for  information  hiding. The common extract/inline  operations  also  apply  to  classes  with  **Extract  Class  (182)**  and  **Inline Class  (186).**
+
+As well as hiding the internals of classes, it’s often useful to **hide connections between  classes**,  which  I  can  do  with  **Hide  Delegate  (189)**.  But  too  much  hiding leads  to  bloated  interfaces,  so  I  also  need  its  reverse:  **Remove  Middle  Man  (192).**
+
+ I  may  need  to  make  a  wholesale change to an algorithm, which I can do by wrapping it in a function with **Extract Function  (106)** and applying **Substitute  Algorithm  (195).**
+
+
+
+#### 7.1 Encapsulate Record
+
+##### 7.1.1 Motivation
+
+1.  Many languages provide convenient syntax for creating hashmaps,  which  makes  them  useful  in  many  programming  situations.  The downside  of  using  them  is  they  are  aren’t  explicit  about  their  ﬁelds.  The  only
+2.  Such  structures  can  be  encapsulated too, which helps if their formats change later on or if I’m concerned about updates to the data that are hard to keep track of.
+
+##### 7.1.2 Mechanics
+
+- Use Encapsulate  Variable  (132) on the variable holding the record.
+  - Give the functions that encapsulate the record names that are easily searchable.
+- Replace the content of the variable with a simple class that wraps the record. Deﬁne an accessor inside this class that returns the raw record. Modify the functions that encapsulate the variable to use this accessor.
+- Test.
+- Provide new functions that return the object rather than the raw record.
+- For  each  user  of  the  record,  replace  its  use  of  a  function  that  returns  the record with a function that returns the object. Use an accessor on the object to  get  at  the  ﬁeld  data,  creating  that  accessor  if  needed.  Test  after  each change.
+  - If it’s a complex record, such as one with a nested structure, focus on clients that
+    update  the  data  ﬁrst.  Consider  returning  a  copy  or  read-only  proxy  of  the  data
+    for clients that only read the data.
+- Remove  the  class’s  raw  data  accessor  and  the  easily  searchable  functions that returned the raw record.
+- Test.
+- If   the   ﬁelds   of   the   record   are   themselves   structures,   consider   using Encapsulate Record and Encapsulate  Collection  (170) recursively.
+
+#### 7.2 Encapsulate Collection
+
+##### 7.2.1 Motivation
+
+To avoid this, I provide collection modiﬁer methods—usually add and remove—on the class itself. This way, changes to the collection go through the owning class, giving me the opportunity to modify such changes as the program evolves.
+
+##### 7.2.2 mechanics
+
+- Apply Encapsulate Variable (132) if the reference to the collection isn’t already
+  encapsulated.
+- Add functions to add and remove elements from the collection.
+  - If  there  is  a  setter  for  the  collection,  use  Remove  Setting  Method  (331)  if  possible.
+    If not, make it take a copy of the provided collection.
+- Run static checks.
+- Find all references to the collection. If anyone calls modiﬁers on the collection,  change  them  to  use  the  new  add/remove  functions.  Test  after  each change.
+- Modify  the  getter  for  the  collection  to  return  a  protected  view  on  it,  using
+  a read-only proxy or a copy.
+- Test.
