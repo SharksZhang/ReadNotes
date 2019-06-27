@@ -659,8 +659,7 @@ As well as hiding the internals of classes, it’s often useful to **hide connec
 
 ##### 7.1.1 Motivation
 
-1.  Many languages provide convenient syntax for creating hashmaps,  which  makes  them  useful  in  many  programming  situations.  The downside  of  using  them  is  they  are  aren’t  explicit  about  their  ﬁelds.  The  only
-2.  Such  structures  can  be  encapsulated too, which helps if their formats change later on or if I’m concerned about updates to the data that are hard to keep track of.
+1.  Many languages provide convenient syntax for creating hashmaps,  which  makes  them  useful  in  many  programming  situations.  The downside  of  using  them  is  they  are  aren’t  explicit  about  their  ﬁelds.  The  only Such  structures  can  be  encapsulated too, which helps if their formats change later on or if I’m concerned about updates to the data that are hard to keep track of.
 
 ##### 7.1.2 Mechanics
 
@@ -695,3 +694,165 @@ To avoid this, I provide collection modiﬁer methods—usually add and remove�
 - Modify  the  getter  for  the  collection  to  return  a  protected  view  on  it,  using
   a read-only proxy or a copy.
 - Test.
+
+#### 7.3 Replace Primitive with Object
+
+##### 7.3.1 Motivation
+
+Often, in early stages of development you make decisions about representing simple facts as simple data items，As development proceeds, those simple items aren’t so simple anymore.his kind of logic can quickly
+end up being duplicated around the code base。
+
+As soon as I realize I want to do something other than simple printing, I like
+to create a new class for that bit of data，once I have that class, I have aplace to put behavior specific to its needs。
+
+当 primitive 拥有了除了打印以外的功能时，将其封装成对象。以便这些功能可以作为对象的方法存在，避免重复。
+
+##### 7.3.2 Mechanics
+
+- Apply **Encapsulate Variable (132)** if it isn’t already.
+- Create a simple value class for the data value. It should take the existing value in its constructor and provide a getter for that value.
+- Run static checks.
+- Change the setter to create a new instance of the value class and store that in the field, changing the type of the field if present.
+- Change the getter to return the result of invoking the getter of the new class.
+- Test.
+- Consider using Rename Function (124) on the original accessors to better reflect what they do.
+- Consider clarifying the role of the new object as a value or reference object by applying Change Reference to Value (252) or Change Value to Reference (256)
+
+#### 7.4 Replace Temp with Query
+
+##### 7.4.1 motivation
+
+One use of temporary variables is to capture the value of some code in order to refer to it later in a function.  I no longer need to pass in variables into the extracted functions.
+
+
+
+##### 7.4.2 mechanics
+
+- Check that the variable is determined entirely before it’s used, and the codethat calculates it does not yield a different value whenever it is used.
+- If the variable isn’t read-only, and can be made read-only, do so.
+- Test.
+- Extract the assignment of the variable into a function.
+- If the variable and the function cannot share a name, use a temporary name for the function.
+- Ensure the extracted function is free of side effects. If not, use **Separate Query from Modifier (306).**
+- Test.
+- Use Inline Variable (123) to remove the temp.
+
+Extract Function +  inline variable
+
+#### 7.5 Extract Class
+
+##### 7.5.1 motivation
+
+- Imagine a class with many methods and quite a lot of data. A class that is too big to understand easily. You need to consider where it can be split—and split it. 
+- A good sign is when a subset of the data and a subset of the methods seem to go together
+- Other good signs are subsets of data that usually change together or are particularly dependent on each other
+
+##### 7.5.3 mechanics 
+
+- Decide how to split the responsibilities of the class.
+- Create a new child class to express the split-off responsibilities.
+  - If the responsibilities of the original parent class no longer match its name, rename the parent.
+- Create an instance of the child class when constructing the parent and add a link from parent to child.
+- Use Move Field (207) on each field you wish to move. Test after each move.
+- Use Move Function (198) to move methods to the new child. Start with lowerlevel methods (those being called rather than calling). Test after each move.
+- Review the interfaces of both classes, remove unneeded methods, change names to better fit the new circumstances.
+- Decide whether to expose the new child. If so, consider applying Change
+  Reference to Value (252) to the child class.- 
+
+#### 7.6 Inline Class
+
+##### 7.6.1 motivation
+
+- I use Inline Class if a class is no longer pulling its weight and shouldn’t be around any more.
+- I use Inline Class if a class is no longer pulling its weight and shouldn’t be around any more.
+
+##### 7.6.2 mechanics
+
+- In the target class, create functions for all the public functions of the sourceclass. These functions should just delegate to the source class.
+- Change all references to source class methods so they use the target class’s delegators instead. Test after each change.
+- Move all the functions and data from the source class into the target, 
+- testing after each move, until the source class is empty.
+- Delete the source class and hold a short, simple funeral service.
+
+#### 7.7 hide delegate 
+
+##### 7.7.1 motivation 
+
+If I have some client code that calls a method defined on an object in a field
+of a server object, the client needs to know about this delegate object. If the
+delegate changes its interface, changes propagate to all the clients of the server that use the delegate
+
+##### 7.7.2 mechanics
+
+- For each method on the delegate, create a simple delegating method on the server.
+- Adjust the client to call the server. Test after each change.
+- If no client needs to access the delegate anymore, remove the server’s
+  accessor for the delegate.
+- Test.
+
+#### 7.8 remove middle man 
+
+##### 7.7.1 motivation
+
+This smell often pops up when people get overenthusiastic about following the Law of Demeter, which I’d like a lot more if it were called the Occasionally Useful Suggestion of Demeter
+
+##### 7.7.2 mechanics
+
+- Create a getter for the delegate.
+- For each client use of a delegating method, replace the call to the delegating method by chaining through the accessor. Test after each replacement.
+  - If all calls to a delegating method are replaced, you can delete the delegating method.
+  - With automated refactorings, you can use Encapsulate Variable (132) on the delegate field and then Inline Function (115) on all the methods that use it
+
+#### 7.9 Substitute Algorithm
+
+##### 7.9.1 motivation
+
+If I find a clearer way to do something, I replace the complicated way with the clearer way.
+
+##### 7.9.2  mechanics
+
+- Arrange the code to be replaced so that it fills a complete function.
+- Prepare tests using this function only, to capture its behavior.
+- Prepare your alternative algorithm.
+- Run static checks.
+- Run tests to compare the output of the old algorithm to the new one. If they are the same, you’re done. Otherwise, use the old algorithm for comparison in testing and debugging.
+
+### 8. Moving Features
+
+I use **Move Function (198)** to move functions between classes and other
+modules. Fields can move too, with **Move Field (207)**.
+
+I also move individual statements around. I use **Move Statements into Function (213)** and **Move Statements to Callers (217)** to move them in or out of functions,as well as **Slide Statements (223)** to move them within a function. Sometimes, I can take some statements that match an existing function and use **Replace Inline Code with Function Call (222)** to remove the duplication.
+
+Two refactorings I often do with loops are **Split Loop (227)**, to ensure a loop does only one thing, and **Replace Loop with Pipeline (231)** to get rid of a loop entirely
+
+And then there’s the favorite refactoring of many a fine programmer: **Remove Dead Code (237).** 
+
+#### 8.1 Move Function
+
+##### 8.1.1 Motivation
+
+1. I may move a function because of where its callers live, or where I need to call it from in my next enhancement. 
+
+2. I may move a function because of where its callers live,
+3. where I need to call it from in my next enhancement. A function defined as a helper inside another function may have value on its own, so it’s worth moving it to somewhere more accessible.
+
+Deciding to move a function is rarely an easy decision. To help me decide, I
+examine the current and candidate contexts for that function. I need to look at what functions call this one, what functions are called by the moving function, and what data that function uses.
+
+##### 8.1.2 polymorphic
+
+- Examine all the program elements used by the chosen function in its current context. Consider whether they should move too.
+  - If I find a called function that should also move, I usually move it first. That way, moving a clusters of functions begins with the one that has the least dependency on the others in the group.
+  - If a high-level function is the only caller of subfunctions, then you can inline those functions into the high-level method, move, and reextract at the destination.
+- Check if the chosen function is a polymorphic method.
+  - If I’m in an object-oriented language, I have to take account of super- and subclass declarations.
+- Copy the function to the target context. Adjust it to fit in its new home.
+  - If the body uses elements in the source context, I need to either pass those elements as parameters or pass a reference to that source context.
+  - Moving a function often means I need to come up with a different name thatworks better in the new context.
+- Perform static analysis.
+- Figure out how to reference the target function from the source context.
+- Turn the source function into a delegating function.
+- Test.
+- Consider Inline Function (115) on the source function.
+  - The source function can stay indefinitely as a delegating function. But if its callers can just as easily reach the target directly, then it’s better to **remove the middle man**.
