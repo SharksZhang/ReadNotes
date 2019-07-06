@@ -840,7 +840,7 @@ And then there’s the favorite refactoring of many a fine programmer: **Remove 
 Deciding to move a function is rarely an easy decision. To help me decide, I
 examine the current and candidate contexts for that function. I need to look at what functions call this one, what functions are called by the moving function, and what data that function uses.
 
-##### 8.1.2 polymorphic
+##### 8.1.2 machanics
 
 - Examine all the program elements used by the chosen function in its current context. Consider whether they should move too.
   - If I find a called function that should also move, I usually move it first. That way, moving a clusters of functions begins with the one that has the least dependency on the others in the group.
@@ -856,3 +856,17 @@ examine the current and candidate contexts for that function. I need to look at 
 - Test.
 - Consider Inline Function (115) on the source function.
   - The source function can stay indefinitely as a delegating function. But if its callers can just as easily reach the target directly, then it’s better to **remove the middle man**.
+
+#### 8.2 Move Field
+
+- Ensure the source field is encapsulated.
+- Test.
+- Create a field (and accessors) in the target.
+- Run static checks.
+- Ensure there is a reference from the source object to the target object.
+  - An existing field or method may give you the target. If not, see if you can easilycreate a method that will do so. Failing that, you may need to create a new field in the source object that can store the target. This may be a permanent change,but you can also do it temporarily until you have done enough refactoring in the broader context.
+- Adjust accessors to use the target field.
+  - If the target is shared between source objects, consider first updating the setter to modify both target and source fields, followed by Introduce Assertion (302) to detect inconsistent updates. Once you determine all is well, finish changing the accessors to use the target field.
+- Test.
+- Remove the source field.
+- Test.
