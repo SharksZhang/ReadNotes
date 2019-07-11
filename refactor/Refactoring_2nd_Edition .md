@@ -870,3 +870,176 @@ examine the current and candidate contexts for that function. I need to look at 
 - Test.
 - Remove the source field.
 - Test.
+
+#### 8.3 Move Statements into Function
+
+##### 8.3.1 motivation
+
+- If I see the same code executed every time I call a particular function, I look to combine that repeating code into the function itself. 
+- I move statements into a function when I can best understand these statements as part of the called function. If they don’t make sense as part of the calledfunction, but still should be called with it, I’ll simply use **Extract Function (106)**on the statements and the called function. 
+
+##### 8.3.2 Mechanics
+
+- If the repetitive code isn’t adjacent to the call of the target function, use **Slide Statements (223)** to get it adjacent.
+- If the target function is only called by the source function, just cut the code from the source, paste it into the target, test, and ignore the rest of these mechanics.
+- If you have more callers, use Extract Function (106) on one of the call sitesto extract both the call to the target function and the statements you wish tomove into it. Give it a name that’s transient, but easy to grep.
+- Convert every other call to use the new function. Test after each conversion.
+- When all the original calls use the new function, use Inline Function (115) to inline the original function completely into the new function, removing the original function.
+- Rename Function (124) to change the name of the new function to the same name as the original function.
+  Or to a better name, if there is one.
+
+#### 8.4 move statements to callers
+
+##### 8.4.1 motivation
+
+One trigger for this is when common behavior used in several places needs tovary in some of its calls. Now, we need to move the varying behavior out of the function to its callers.
+
+##### 8.4.2 mechanics
+
+- In simple circumstances, where you have only one or two callers and a simple function to call from, just cut the first line from the called function and paste (and perhaps fit) it into the callers. Test and you’re done.
+- Otherwise, apply **Extract Function (106)** to all the statements that you don’t wish to move; give it a temporary but easily searchable name.
+  - If the function is a method that is overridden by subclasses, do the extraction on all of them so that the remaining method is identical in all classes. Then remove the subclass methods.
+- Use Inline Function (115) on the original function.
+- Apply Change Function Declaration (124) on the extracted function to rename it to the original name.
+  - Or to a better name, if you can think of one.
+
+#### 8.5 replace inline code with Function Call
+
+##### 8.5.1 motivation
+
+If I see inline code that’s doing the same thing that I have in an existing function, I’ll usually want to replace that inline code with a function call. 
+
+##### 8.5.2 mechanics
+
+- Replace the inline code with a call to the existing function.
+- Test
+
+
+
+
+
+#### 8.6 Slide Statements
+
+##### 8.6.1 motivation
+
+ I move related code together as a preparatory step for another refactoring, often an Extract Function (106). 
+
+##### 8.6.2 mechanics
+
+- Identify the target position to move the fragment to. Examine statements between source and target to see if there is interference for the candidate fragment. Abandon action if there is any interference.
+  - A fragment cannot slide backwards earlier than any element it references is declared.
+  - A fragment cannot slide forwards beyond any element that references it.
+  - A fragment cannot slide over any statement that modifies an element it references.
+  - A fragment that modifies an element cannot slide over any other element that references the modified element.
+- Cut the fragment from the source and paste into the target position.
+- Test
+
+#### 8.7 Split Loop
+
+##### 8.7.1 motivations
+
+You often see loops that are doing two different things at once just because they can do that with one pass through a loop. But if you’re doing two different things in the same loop, then whenever you need to modify the loop you have to understand both things. By splitting the loop, you ensure you only need to understand the behavior you need to modify.
+
+##### 8.7.2 Mechanics
+
+- Copy the loop.
+- Identify and eliminate duplicate side effects.
+- Test.
+
+
+
+
+
+#### 8.8 Replace Loop with pipeline
+
+##### 8.8.1 monivation 
+
+Like most programmers, I was taught to use loops to iterate over a collection of objects. Increasingly, however, language environments provide a better construct: the collection pipeline.
+
+##### 8.8.2 mechanics
+
+- Create a new variable for the loop’s collection.
+  - This may be a simple copy of an existing variable.
+- Starting at the top, take each bit of behavior in the loop and replace it witha collection pipeline operation in the derivation of the loop collection variable. Test after each change.
+- Once all behavior is removed from the loop, remove it.
+  - If it assigns to an accumulator, assign the pipeline result to the accumulator.
+
+### 9. Organizing Data
+
+A value that’s used for different purposes is a breeding ground for confusion and bugs—so, when I see one, I use **Split Variable (240)** to separate the usages. As with any program element, getting a variable’s name right is tricky and important, so **Rename Variable (137)** is often my friend.
+
+But sometimes the best thing I can do with a variable is to get rid of it completely—with **Replace Derived Variable with Query (248).**
+
+I often find problems in a code base due to a confusion between references
+and values, so I use **Change Reference to Value (252)** and **Change Value to Reference (256)** to change between these styles.
+
+#### 9.1 split Varible 
+
+##### 9.1.1 motivation
+
+Many other variables are used to hold the result of a long-winded bit of code
+for easy reference later. These kinds of variables should be set only once. If they are set more than once, it is a sign that they have more than one responsibility within the method.
+
+##### 9.1.2 mechanics
+
+- Change the name of the variable at its declaration and first assignment.
+  - If the later assignments are of the form i = i + something, that is a collecting variable, so don’t split it. A collecting variable is often used for calculating sums, string concatenation, writing to a stream, or adding to a collection.
+- If possible, declare the new variable as immutable.
+- Change all references of the variable up to its second assignment.
+- Test.
+- Repeat in stages, at each stage renaming the variable at the declaration and changing references until the next assignment, until you reach the final assignment.
+
+#### 9.2 Rename Field
+
+#### 9.3 Replace Derived Variable with Query
+
+##### 9.3.1 Motivation
+
+- One of the biggest sources of problems in software is mutable data. 
+- One way I can make a big impact is by removing any variables that I could just as easily calculate.
+- One way I can make a big impact is by removing any variables that I could just as easily calculate.
+
+##### 9.3.2 mechanics
+
+- Identify all points of update for the variable. If necessary, use Split Variable (240) to separate each point of update.
+- Create a function that calculates the value of the variable.
+- Use Introduce Assertion (302) to assert that the variable and the calculation give the same result whenever the variable is used.
+  - If necessary, use Encapsulate Variable (132) to provide a home for the assertion.
+- Test.
+- Replace any reader of the variable with a call to the new function.
+- Test.
+- Apply Remove Dead Code (237) to the declaration and updates to the variable.
+
+#### 9.4 Change Reference to Value 
+
+##### 9.4.1 Motivation
+
+- If I treat a field as a value, I can change the class of the inner object to make it a Value Object [mf-vo]. Value objects are generally easier to reason about, particularly because they are immutable. 
+- This also suggests when I shouldn’t do this refactoring. If I want to share an object between several objects so that any change to the shared object is visible to all its collaborators, then I need the shared object to be a reference.
+
+##### 9.4.2 mechanics
+
+- Check that the candidate class is immutable or can become immutable.
+- For each setter, apply Remove Setting Method (331).
+- Provide a value-based equality method that uses the fields of the value object.
+  - Most language environments provide an overridable equality function for this purpose. Usually you must override a hashcode generator method as well.
+
+#### 9.5 Change Value to Reference
+
+##### 9.5.1 motivation
+
+- The biggest difficulty in having physical copies of the same logical data occurs when I need to update the shared data. I then have to find all the copies and update them all. If I miss one, I’ll get a troubling inconsistency in my data. In this case, it’s often worthwhile to change the copied data into a single reference. That way, any change is visible to all the customer’s orders.
+- Changing a value to a reference results in only one object being present for an entity, and it usually means I need some kind of repository where I can access these objects. I then only create the object for an entity once, and everywhere else I retrieve it from the repository
+
+##### 9.5.2 mechanics
+
+- Create a repository for instances of the related object (if one isn’t already
+  present).
+- Ensure the constructor has a way of looking up the correct instance of the related object.
+- Change the constructors for the host object to use the repository to obtain the related object. Test after each change.
+
+
+
+
+
+### simplifying Condition
