@@ -1042,4 +1042,45 @@ for easy reference later. These kinds of variables should be set only once. If t
 
 
 
-### simplifying Condition
+### 10. simplifying Condition
+
+#### 10.1 Decompost Conditional
+
+##### 10.1.1 motivations
+
+As with any large block of code, I can make my intention clearer by decomposing it and replacing each chunk of code with a function call named after the intention of that chunk.
+
+##### 10.1.2 mechanics 
+
+- Apply Extract Function (106) on the condition and each leg of the conditional
+
+#### 10.2 Consolidate Conditional Expression
+
+##### 10.2.1 Motivation
+
+- Sometimes, I run into a series of conditional checks where each check is different yet the resulting action is the same. When I see this, I use and and or operators to consolidate them into a single conditional check with a single result.
+- Sometimes, I run into a series of conditional checks where each check is different yet the resulting action is the same. When I see this, I use and and or operators to consolidate them into a single conditional check with a single result.
+
+##### 10.2.2 mechanics
+
+- Ensure that none of the conditionals have any side effects.
+  - If any do, use Separate Query from Modifier (306) on them first.
+- Take two of the conditional statements and combine their conditions using a logical operator.
+  - Sequences combine with or, nested if statements combine with and.
+- Test.
+- Repeat combining conditionals until they are all in a single condition.
+- Consider using Extract Function (106) on the resulting condition.
+
+#### 10.3 Replace Nested Conditional with Guard Clauses
+
+#### 10.3.1 motivation
+
+- If both are part of normal behavior, I use a condition with an if and an else leg. If the condition is an unusual condition, I check the condition and return if it’s true. This kind of check is often called a guard clause.
+- The key point of Replace Nested Conditional with Guard Clauses is emphasis
+
+##### 10.3.2 mechanics
+
+- Select outermost condition that needs to be replaced, and change it into a guard clause.
+- Test.
+- Repeat as needed.
+- If all the guard clauses return the same result, use Consolidate Conditional Expression (263).
