@@ -1084,3 +1084,140 @@ As with any large block of code, I can make my intention clearer by decomposing 
 - Test.
 - Repeat as needed.
 - If all the guard clauses return the same result, use Consolidate Conditional Expression (263).
+
+
+
+
+
+#### 10.4 Replace Conditional with Polymorphism
+
+##### 10.4.1 motivation
+
+- I find I can separate the logic into different circumstances—high-level cases—to divide the conditions.Sometimes it’s enough to represent this division within the structure of a conditional itself, but using classes and polymorphism can make the separation more explicit.
+- A common case for this is where I can form a set of types, each handling the conditional logic differently.
+- Another situation is where I can think of the logic as a base case with variants.The base case may be the most common or most straightforward. 
+-  Most of my conditional logic uses basic conditional statements—if/else and switch/case. But when I see complex conditional logic that can be improved as discussed above, I find polymorphism a powerful tool.
+
+##### 10.4.2 mechanics
+
+- If classes do not exist for polymorphic behavior, create them together with a factory function to return the correct instance.
+- Use the factory function in calling code.
+- Move the conditional function to the superclass.
+  - If the conditional logic is not a self-contained function, use Extract Function (106) to make it so.
+- Pick one of the subclasses. Create a subclass method that overrides the
+  conditional statement method. Copy the body of that leg of the conditional statement into the subclass method and adjust it to fit.
+- Repeat for each leg of the conditional.
+- Leave a default case for the superclass method. Or, if superclass should beabstract, declare that method as abstract or throw an error to show it should be the responsibility of a subclass.
+
+#### 10.5 introduce special case
+
+##### 10.5.2 mechanics
+
+- Add a special-case check property to the subject, returning false.
+- Create a special-case object with only the special-case check property,
+  returning true.
+- Apply Extract Function (106) to the special-case comparison code. Ensure that all clients use the new function instead of directly comparing it.
+- Introduce the new special-case subject into the code, either by returning it from a function call or by applying a transform function.
+- Change the body of the special-case comparison function so that it uses the special-case check property.
+- Test.
+- Use Combine Functions into Class (144) or Combine Functions into Transform (149) to move all of the common special-case behavior into the new element.
+  - Since the special-case class usually returns fixed values to simple requests, these may be handled by making the special case a literal record.
+- Use Inline Function (115) on the special-case comparison function for the places where it’s still needed.
+
+
+
+### 11.  refactoring APIs
+
+- A good API clearly separates any functions that update data from those that only read data. If I see them combined, I use **Separate Query from Modifier (306)** to tease them apart.I can unify functions that only vary due to a value with **Parameterize Function (310).**Some parameters, however, are really just a signal of an entirely different behavior and are best excised with **Remove Flag Argument(314**).
+
+- Data structures are often unpacked unnecessarily when passed between functions; I prefer to keep them together with **Preserve Whole Object (319)**. Decisions on what should be passed as a parameter, and what can be resolved by the called function, are ones I often need to revisit with **Replace Parameter with Query (324)** and **Replace Query with Parameter (327)**.
+
+-  I prefer my objects to be as immutable as possible, so I use **Remove Setting Method (331)** whenever I can. I need more flexibility than a simple constructor gives, which I can get by using **Replace Constructor with Factory Function (334).**
+
+- The last two refactorings address the difficulty of breaking down a particularly complex function that passes a lot of data around. I can turn that function into an object with **Replace Function with Command (337),** which makes it easier to use **Extract Function (106)** on the function’s body. If I later simplify the function and no longer need it as a command object, I turn it back into a function with **Replace Command with Function (344)**.
+
+#### 10.1 Seperate Query form Modifier
+
+##### 10.1.1 Motivation
+
+- When I have a function that gives me a value and has no observable side effects, I have a very valuable thing. It’s easier to test. In short, I have a
+  lot less to worry about.
+- A good rule to follow is that any function that returns a value should not have observable side effects—the command-query separation [mf-cqs].
+
+##### 10.1.2 Mechanics
+
+- Copy the function, name it as a query.
+  - Look into the function to see what is returned. If the query is used to populate a variable, the variable’s name should provide a good clue.
+- Remove any side effects from the new query function.
+- Run static checks.
+- Find each call of the original method. If that call uses the return value, replace the original call with a call to the query and insert a call to the original method below it. Test after each change.
+- Remove return values from original.
+- Test
+
+Often after doing this there will be duplication between the query and the
+original method that can be tidied up
+
+
+
+#### 10.2 Parameterize Function
+
+##### 10.2.1 motivation
+
+If I see two functions that carry out very similar logic with different literal values,I can remove the duplication by using a single function with parameters for the different values.
+
+
+
+##### 10.2.2 mechanics
+
+- Select one of the similar methods.
+- Use Change Function Declaration (124) to add any literals that need to turn into parameters.
+- For each caller of the function, add the literal value.
+- Test.
+- Change the body of the function to use the new parameters. Test after each change.
+- For each similar function, replace the call with a call to the parameterized function. Test after each one
+
+If the original parameterized function doesn’t work for a similar function, adjust it for the new function before moving on to the next.
+
+#### 11.3 Remove Flag Argument
+
+##### 11.3.1 Motivation
+
+- I dislike flag arguments because they complicate the process of understanding what function calls are available and how to call them. My first route into an API is usually the list of available functions, and flag arguments hide the differences in the function calls that are available. 
+- I dislike flag arguments because they complicate the process of understanding what function calls are available and how to call them. My first route into an API is usually the list of available functions, and flag arguments hide the differences in the function calls that are available. 
+
+##### 11.3.2 mechanics
+
+- Create an explicit function for each value of the parameter.
+  -  If the main function has a clear dispatch conditional, use **Decompose Conditional (260)** to create the explicit functions. Otherwise, create wrapping functions.
+- For each caller that uses a literal value for the parameter, replace it with a call to the explicit function.
+
+
+
+#### 10.4 Preserve Whole Object 
+
+##### 10.4.1 Motivation
+
+- Advantage
+
+  - Passing the whole record handles change better should the called function need more data from the whole in the future—that change would not require me to alter the parameter list.
+  - It also reduces the size of the parameter list, which usually makes the function call easier to understand.
+
+- Disadvantage 
+
+  - The main reason I wouldn’t do this is if I don’t want the called function to have a dependency on the whole—which typically occurs when they are in different modules.
+
+- 组合拳
+
+  - Introduce Parameter Object (140), —>Preserve Whole Object—> moved into the whole itself
+  - If several bits of code only use the same subset of an object’s features, then that may indicate a good opportunity for Extract Class (182).
+
+  ##### 10.4.2 machanics
+
+  - Create an empty function with the desired parameters.
+    - Give the function an easily searchable name so it can be replaced at the end.
+  - Fill the body of the new function with a call to the old function, mapping from the new parameters to the old ones.
+  - Run static checks.
+  - Adjust each caller to use the new function, testing after each change.
+    - This may mean that some code that derives the parameter isn’t needed, so can fall to Remove Dead Code (237).
+  - Once all original callers have been changed, use Inline Function (115) on the original function.
+  - Change the name of the new function and all its callers
