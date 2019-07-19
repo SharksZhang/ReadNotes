@@ -1221,3 +1221,110 @@ If the original parameterized function doesn’t work for a similar function, ad
     - This may mean that some code that derives the parameter isn’t needed, so can fall to Remove Dead Code (237).
   - Once all original callers have been changed, use Inline Function (115) on the original function.
   - Change the name of the new function and all its callers
+
+#### 10.5 Replace Parameter with query
+
+##### 10.5.1 Motivation
+
+1. When the parameter is present, determining its value is the caller’s responsibility; otherwise, that responsibility shifts to the function body. My usual habit is to simplify life for callers.
+2. The safest case for Replace Parameter with Query is when the value of the parameter I want to remove is determined merely by querying another parameter in the list.
+
+
+1. When the parameter is present, determining its value is the caller’s responsibility; otherwise, that responsibility shifts to the function body. My usual habit is to simplify life for callers
+2. One thing to watch out for is if the function I’m looking at has referential
+   transparency—that is, if I can be sure that it will behave the same way wheneverit’s called with the same parameter values. Such functions are much easier to reason about and test, and I don’t want to alter them to lose that property.
+
+##### 10.5.2 mechanics
+
+- If necessary, use Extract Function (106) on the calculation of the parameter.
+- Replace references to the parameter in the function body with references to the expression that yields the parameter. Test after each change.
+- Use **Change Function Declaration (124)** to remove the parameter
+
+
+
+#### 10.5 Replace Query With Parameter
+
+##### 10.5.1 motivation
+
+- I sometimes see references to something in the function’s scope that I’m not happy with. This might be a reference to a global variable, or to an element in the same module that I intend to move away
+- If a function accesses some element in its scope that isn’t referentially transparent, then the containing function also lacks referential transparency. I can fix that by
+-  By moving a query to a parameter, I force my caller to figure out how to provide this value. This complicates life for callers of the functions, and my usual bias is to design interfaces that make life easier for their consumers. In the end, it boils down to allocation of responsibility around the program, and t**hat’s a decision that’s neither easy nor immutable**—which is why this refactoring (and its inverse) is one that I need to be very familiar with.
+
+##### 10.5.2 mechanics
+
+- Use Extract Variable (119) on the query code to separate it from the rest of the function body.
+- Apply Extract Function (106) to the body code that isn’t the call to the query.
+- Give the new function an easily searchable name, for later renaming.
+- Use Inline Variable (123) to get rid of the variable you just created.
+- Apply Inline Function (115) to the original function.
+- Rename the new function to that of the original.
+
+
+
+
+
+#### 10.6 remove setting method
+
+##### 10.6.1 motivation 
+
+1. One is where people always use accessor methods to manipulate a field, even within constructors. This leads to the only call to a setting method being from the constructor. 
+2. Another case is where the object is created by clients using creation script rather than by a simple constructor call. Another case is where the object is created by clients using creation script rather than by a simple constructor call.  
+
+##### 10.6.2 mechanics
+
+- If the value that’s being set isn’t provided to the constructor, use Change
+  Function Declaration (124) to add it. Add a call to the setting method within the constructor.
+  - If you wish to remove several setting methods, add all their values to the constructor at once. This simplifies the later steps.
+- Remove each call of a setting method outside of the constructor, using the new constructor value instead. Test after each one.
+  - If you can’t replace the call to the setter by creating a new object (because you are updating a shared reference object), abandon the refactoring.
+- Use Inline Function (115) on the setting method. Make the field immutable if possible.
+- Test.
+
+#### 10.7 replace counstructor with factory
+
+##### 10.7.1 Motivation 
+
+But these constructors often come with awkward limitations that aren’t there for more general functions. A Java constructor must return an instance of the class it was called with, which means I can’t replace it with a subclass or proxy depending on the environment or parameters.
+
+##### 10.7.2 mechanics
+
+- Create a factory function, its body being a call to the constructor.
+- Replace each call to the constructor with a call to the factory function.
+- Test after each change.
+- Limit the constructor’s visibility as much as possible
+
+#### 10.8 replace function with command
+
+##### 10.8.1 movication
+
+1. I can provide methods to build up their parameters to support a richer lifecycle.
+2. I can build in customizations using inheritance and hooks. 
+3. imilarly, I can use methods and fields to help break down a complex function, even in a language that lacks nested functions, and I can call those methods directly while testing and debugging.
+
+##### 10.8.2 mechanics
+
+- Create an empty class for the function. Name it based on the function.
+- Use Move Function (198) to move the function to the empty class.
+  - Keep the original function as a forwarding function until at least the end of the refactoring.
+    Follow any convention the language has for naming commands. If there is no convention, choose a generic name for the command’s execute function, such as “execute” or “call”.
+  - Consider making a field for each argument, and move these arguments to the constructor.
+
+#### 10.9 replace command with function
+
+##### 10.9.1  motivation
+
+Most of the time, I just want to invoke a function and have it do its thing.
+If that’s the case, and the function isn’t too complex, then a command object is more trouble than its worth and should be turned into a regular function.
+
+##### 10.9.2 mechanics
+
+- Apply Extract Function (106) to the creation of the command and the call to the command’s execution method.
+  - This creates the new function that will replace the command in due course.
+- For each method called by the command’s execution method, apply Inline Function (115).
+  - If the supporting function returns a value, use Extract Variable (119) on the call first and then Inline Function (115).
+- Use Change Function Declaration (124) to put all the parameters of the constructor into the command’s execution method instead.
+- For each field, alter the references in the command’s execution method to use the parameter instead. Test after each change.
+- Inline the constructor call and command’s execution method call into the caller (which is the replacement function).
+  Test.
+- Apply Remove Dead Code (237) to the command class.
+
