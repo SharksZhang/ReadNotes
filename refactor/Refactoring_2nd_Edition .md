@@ -1136,15 +1136,15 @@ As with any large block of code, I can make my intention clearer by decomposing 
 
 - The last two refactorings address the difficulty of breaking down a particularly complex function that passes a lot of data around. I can turn that function into an object with **Replace Function with Command (337),** which makes it easier to use **Extract Function (106)** on the function’s body. If I later simplify the function and no longer need it as a command object, I turn it back into a function with **Replace Command with Function (344)**.
 
-#### 10.1 Seperate Query form Modifier
+#### 11.1 Seperate Query form Modifier
 
-##### 10.1.1 Motivation
+##### 11.1.1 Motivation
 
 - When I have a function that gives me a value and has no observable side effects, I have a very valuable thing. It’s easier to test. In short, I have a
   lot less to worry about.
 - A good rule to follow is that any function that returns a value should not have observable side effects—the command-query separation [mf-cqs].
 
-##### 10.1.2 Mechanics
+##### 11.1.2 Mechanics
 
 - Copy the function, name it as a query.
   - Look into the function to see what is returned. If the query is used to populate a variable, the variable’s name should provide a good clue.
@@ -1159,15 +1159,15 @@ original method that can be tidied up
 
 
 
-#### 10.2 Parameterize Function
+#### 11.2 Parameterize Function
 
-##### 10.2.1 motivation
+##### 11.2.1 motivation
 
 If I see two functions that carry out very similar logic with different literal values,I can remove the duplication by using a single function with parameters for the different values.
 
 
 
-##### 10.2.2 mechanics
+##### 11.2.2 mechanics
 
 - Select one of the similar methods.
 - Use Change Function Declaration (124) to add any literals that need to turn into parameters.
@@ -1193,9 +1193,9 @@ If the original parameterized function doesn’t work for a similar function, ad
 
 
 
-#### 10.4 Preserve Whole Object 
+#### 11.4 Preserve Whole Object 
 
-##### 10.4.1 Motivation
+##### 11.4.1 Motivation
 
 - Advantage
 
@@ -1211,7 +1211,7 @@ If the original parameterized function doesn’t work for a similar function, ad
   - Introduce Parameter Object (140), —>Preserve Whole Object—> moved into the whole itself
   - If several bits of code only use the same subset of an object’s features, then that may indicate a good opportunity for Extract Class (182).
 
-  ##### 10.4.2 machanics
+  ##### 11.4.2 machanics
 
   - Create an empty function with the desired parameters.
     - Give the function an easily searchable name so it can be replaced at the end.
@@ -1222,9 +1222,9 @@ If the original parameterized function doesn’t work for a similar function, ad
   - Once all original callers have been changed, use Inline Function (115) on the original function.
   - Change the name of the new function and all its callers
 
-#### 10.5 Replace Parameter with query
+#### 11.5 Replace Parameter with query
 
-##### 10.5.1 Motivation
+##### 11.5.1 Motivation
 
 1. When the parameter is present, determining its value is the caller’s responsibility; otherwise, that responsibility shifts to the function body. My usual habit is to simplify life for callers.
 2. The safest case for Replace Parameter with Query is when the value of the parameter I want to remove is determined merely by querying another parameter in the list.
@@ -1234,23 +1234,23 @@ If the original parameterized function doesn’t work for a similar function, ad
 2. One thing to watch out for is if the function I’m looking at has referential
    transparency—that is, if I can be sure that it will behave the same way wheneverit’s called with the same parameter values. Such functions are much easier to reason about and test, and I don’t want to alter them to lose that property.
 
-##### 10.5.2 mechanics
+##### 11.5.2 mechanics
 
-- If necessary, use Extract Function (106) on the calculation of the parameter.
+- If necessary, use Extract Function (116) on the calculation of the parameter.
 - Replace references to the parameter in the function body with references to the expression that yields the parameter. Test after each change.
 - Use **Change Function Declaration (124)** to remove the parameter
 
 
 
-#### 10.5 Replace Query With Parameter
+#### 11.5 Replace Query With Parameter
 
-##### 10.5.1 motivation
+##### 11.5.1 motivation
 
 - I sometimes see references to something in the function’s scope that I’m not happy with. This might be a reference to a global variable, or to an element in the same module that I intend to move away
 - If a function accesses some element in its scope that isn’t referentially transparent, then the containing function also lacks referential transparency. I can fix that by
 -  By moving a query to a parameter, I force my caller to figure out how to provide this value. This complicates life for callers of the functions, and my usual bias is to design interfaces that make life easier for their consumers. In the end, it boils down to allocation of responsibility around the program, and t**hat’s a decision that’s neither easy nor immutable**—which is why this refactoring (and its inverse) is one that I need to be very familiar with.
 
-##### 10.5.2 mechanics
+##### 11.5.2 mechanics
 
 - Use Extract Variable (119) on the query code to separate it from the rest of the function body.
 - Apply Extract Function (106) to the body code that isn’t the call to the query.
@@ -1263,14 +1263,14 @@ If the original parameterized function doesn’t work for a similar function, ad
 
 
 
-#### 10.6 remove setting method
+#### 11.6 remove setting method
 
-##### 10.6.1 motivation 
+##### 11.6.1 motivation 
 
 1. One is where people always use accessor methods to manipulate a field, even within constructors. This leads to the only call to a setting method being from the constructor. 
 2. Another case is where the object is created by clients using creation script rather than by a simple constructor call. Another case is where the object is created by clients using creation script rather than by a simple constructor call.  
 
-##### 10.6.2 mechanics
+##### 11.6.2 mechanics
 
 - If the value that’s being set isn’t provided to the constructor, use Change
   Function Declaration (124) to add it. Add a call to the setting method within the constructor.
@@ -1280,28 +1280,28 @@ If the original parameterized function doesn’t work for a similar function, ad
 - Use Inline Function (115) on the setting method. Make the field immutable if possible.
 - Test.
 
-#### 10.7 replace counstructor with factory
+#### 11.7 replace counstructor with factory
 
-##### 10.7.1 Motivation 
+##### 11.7.1 Motivation 
 
 But these constructors often come with awkward limitations that aren’t there for more general functions. A Java constructor must return an instance of the class it was called with, which means I can’t replace it with a subclass or proxy depending on the environment or parameters.
 
-##### 10.7.2 mechanics
+##### 11.7.2 mechanics
 
 - Create a factory function, its body being a call to the constructor.
 - Replace each call to the constructor with a call to the factory function.
 - Test after each change.
 - Limit the constructor’s visibility as much as possible
 
-#### 10.8 replace function with command
+#### 11.8 replace function with command
 
-##### 10.8.1 movication
+##### 11.8.1 movication
 
 1. I can provide methods to build up their parameters to support a richer lifecycle.
 2. I can build in customizations using inheritance and hooks. 
 3. imilarly, I can use methods and fields to help break down a complex function, even in a language that lacks nested functions, and I can call those methods directly while testing and debugging.
 
-##### 10.8.2 mechanics
+##### 11.8.2 mechanics
 
 - Create an empty class for the function. Name it based on the function.
 - Use Move Function (198) to move the function to the empty class.
@@ -1309,14 +1309,14 @@ But these constructors often come with awkward limitations that aren’t there f
     Follow any convention the language has for naming commands. If there is no convention, choose a generic name for the command’s execute function, such as “execute” or “call”.
   - Consider making a field for each argument, and move these arguments to the constructor.
 
-#### 10.9 replace command with function
+#### 11.9 replace command with function
 
-##### 10.9.1  motivation
+##### 11.9.1  motivation
 
 Most of the time, I just want to invoke a function and have it do its thing.
 If that’s the case, and the function isn’t too complex, then a command object is more trouble than its worth and should be turned into a regular function.
 
-##### 10.9.2 mechanics
+##### 11.9.2 mechanics
 
 - Apply Extract Function (106) to the creation of the command and the call to the command’s execution method.
   - This creates the new function that will replace the command in due course.
@@ -1327,4 +1327,209 @@ If that’s the case, and the function isn’t too complex, then a command objec
 - Inline the constructor call and command’s execution method call into the caller (which is the replacement function).
   Test.
 - Apply Remove Dead Code (237) to the command class.
+
+
+
+### chapter12: Dealing with inherantence hierarchy
+
+- features need to move up or down the inheritance hierarchy. Several
+  refactorings deal with that: **Pull Up Method (350)**, **Pull Up Field (353)**, **Pull Up Constructor Body (355)**, **Push Down Method (359)**, and **Push Down Field (361)**.
+
+- I can add and remove classes from the hierarchy with **Extract Superclass (375),** **RemoveSubclass (369)**, and **Collapse Hierarchy (380)**. 
+
+- I may want to add a subclass to replace a field that I’m using to trigger different behavior based on its value; I do this with Replace Type Code with Subclasses (362).
+- Inheritance is a powerful tool, but sometimes it gets used in the wrong place—or the place it’s used in becomes wrong. In that case, I use **Replace Subclass with Delegate (381)** or **Replace Superclass with Delegate (399)** to turn inheritance into delegation.
+
+#### 12.1 pull up method 
+
+##### 12.1.1 motivations
+
+- Eliminating duplicate code is important.
+- Often, Pull Up Method comes after other steps. I see two methods in different classes that can be parameterized in such a way that they end up as essentially the same method. In that case, the smallest step is for me to apply **Parameterize Function (310)** separately and then Pull Up Method.
+- If the body of the method refers to features that are on the subclass but not on the superclass. When that happens, I need to use Pull Up Field (353) and Pull Up Method on those elements first.
+
+##### 12.1.2 mechanics
+
+- Inspect methods to ensure they are identical.
+  - If they do the same thing, but are not identical, refactor them until they have identical bodies.
+- Check that all method calls and field references inside the method body refer to features that can be called from the superclass.
+- If the methods have different signatures, use **Change Function Declaration (124)** to get them to the one you want to use on the superclass.
+- Create a new method in the superclass. Copy the body of one of the methods over to it.
+- Run static checks.
+- Delete one subclass method.
+- Test.
+- Keep deleting subclass methods until they are all gone.
+
+#### 12.2 pull up field
+
+##### 12.2.1 motivations
+
+- If they are being used in a similar way, I can pull them up into the
+  superclass,By doing this, I reduce duplication in two ways. I remove the duplicate data declaration and I can then move behavior that uses the field from the subclasses to the superclass.
+
+##### 12.2.2 mechanics
+
+- Inspect all users of the candidate field to ensure they are used in the
+  same way.
+- If the fields have different names, use Rename Field (244) to give them the same name.
+- Create a new field in the superclass.
+- The new field will need to be accessible to subclasses (protected in common languages).
+- Delete the subclass fields.
+- Test.
+
+#### 12.3 pull up Constructor Body
+
+##### 12.3.1 motivations
+
+If this refactoring starts getting messy, I reach for Replace Constructor with Factory Function (334).
+
+##### 12.3.2 mechanics
+
+- Define a superclass constructor, if one doesn’t already exist. Ensure it’s called by subclass constructors.
+- Use Slide Statements (223) to move any common statements to just after the super call.
+- Remove the common code from each subclass and put it in the superclass.Add to the super call any constructor parameters referenced in the common code.
+- Test.
+- If there is any common code that cannot move to the start of the constructor,
+- use Extract Function (106) followed by Pull Up Method (350).
+
+#### 12.4 push down Method
+
+##### 12.4.1 motivation
+
+
+
+- If a method is only relevant to one subclass (or a small proportion of subclasses), removing it from the superclass and putting it only on the subclass(es) makes that clearer
+- I can only do this refactoring if the caller knows it’s working with a
+  particular subclass—otherwise, I should use Replace Conditional with Polymorphism (272) with some placebo behavior on the superclass.
+
+##### 12.4.2 mechanics
+
+- Copy the method into every subclass that needs it.
+- Remove the method from the superclass.
+- Test.
+- Remove the method from each superclass that doesn’t need it.
+- Test.
+
+##### 12.5 push down field
+
+##### 12.5.1 motivation
+
+If a field is only used by one subclass (or a small proportion of subclasses), I
+move it to those subclasses.
+
+##### 12.5.2 mechanics
+
+- Declare field in all subclasses that need it.
+- Remove the field from the superclass.
+- Test.
+- Remove the field from all subclasses that don’t need it.
+- Test.
+
+#### 12.6 replace type code with subclasses
+
+##### 12.6.1 motivations
+
+There are two things that are particularly enticing about subclasses.
+
+1. they allow me to use polymorphism to handle conditional logic
+2. The second case is where I have fields or methods that are only valid for particular values of a type code, such as a sales quota that’s only applicable to the “salesman” type code. 
+
+I need to consider whether to apply **it directly to the class I’m looking at, or to the type code itself.** Do I make engineer a subtype of employee, or should I give the employee an employee type property which can have subtypes for engineer and manager?
+
+1. Using direct subclassing is simpler, but I can’t use it for the job type if I need it for something else.
+2. I also can’t use direct subclasses if the type is mutable. 
+3. If I need to move the subclasses to an employee type property, I can do that by using Replace Primitive with Object (174) on the type code to create an employee type class and then using Replace Type Code with Subclasses on that new class.
+
+##### 12.6.2 mechanics
+
+- Self-encapsulate the type code field.
+- Pick one type code value. Create a subclass for that type code. Override the type code getter to return the literal type code value.
+- Create selector logic to map from the type code parameter to the new
+  subclass.
+  - With direct inheritance, use Replace Constructor with Factory Function (334) and put the selector logic in the factory. With indirect inheritance, the selector logic may stay in the constructor.
+- Test.
+- Repeat creating the subclass and adding to the selector logic for each type code value. Test after each change.
+- Remove the type code field.
+- Test.
+- Use Push Down Method (359) and Replace Conditional with Polymorphism (272) on any methods that use the type code accessors. Once all are replaced, you can remove the type code accessors.
+
+#### 12.7 remove subclass
+
+##### 12.7.1 motivations
+
+A subclass that does too little incurs a cost in understanding that is no longer worthwhile. 
+
+##### 12.7.2 mechanics
+
+- Use Replace Constructor with Factory Function (334) on the subclass constructor.
+  - If the clients of the constructors use a data field to decide which subclass to create, put that decision logic into a superclass factory method.
+- If any code tests against the subclass’s types, use Extract Function (106) on the type test and Move Function (198) to move it to the superclass. Test after each change.
+- Create a field to represent the subclass type.
+- Change the methods that refer to the subclass to use the new type field.
+- Delete the subclass.
+- Test.
+
+#### 12.8 collapse hierarchy
+
+##### 12.8.1 motivations
+
+ I sometimes find that a class and its parent are no longer different enough to be worth keeping separate. At this point, I’ll merge them together.
+
+##### 12.8.2 mechanics
+
+- Choose which one to remove.
+  - I choose based on which name makes most sense in the future. If neither name is best, I’ll pick one arbitrarily.
+- Use Pull Up Field (353), Push Down Field (361), Pull Up Method (350), and Push
+- Down Method (359) to move all the elements into a single class.
+- Adjust any references to the victim to change them to the class that will stay.
+- Remove the empty class.
+- Test.
+
+#### 12.9 Replace subclass with Delegate
+
+##### 12.9.1 motivations
+
+disadvantages of  Inheritence
+
+1.  Most obviously, it’s a card that can only be played once. 
+2. A further problem is that inheritance introduces a very close relationship between classes. Any change I want to make to the parent can easily break children,
+
+Delegaton:
+
+1. Delegation handles both of these problems. 
+2. I use inheritance frequently, partly because I always know I can use Replace Subclass with Delegate should I need to change it later.
+
+##### 12.9.2 mechanics
+
+- If there are many callers for the constructors, apply Replace Constructor with Factory Function (334).
+- Create an empty class for the delegate. Its constructor should take any
+  subclass-specific data as well as, usually, a back-reference to the superclass.
+- Add a field to the superclass to hold the delegate.
+- Modify the creation of the subclass so that it initializes the delegate field
+  with an instance of the delegate.
+  - This can be done in the factory function, or in the constructor if the constructor can reliably tell whether to create the correct delegate.
+- Choose a subclass method to move to the delegate class.
+- Use Move Function (198) to move it to the delegate class. Don’t remove the source’s delegating code.
+  - If the method needs elements that should move to the delegate, move them. If it needs elements that should stay in the superclass, add a field to the delegate that refers to the superclass.
+- If the source method has callers outside the class, move the source’s delegating code from the subclass to the superclass, guarding it with a check for the presence of the delegate. If not, apply Remove Dead Code (237).
+  - If there’s more than one subclass, and you start duplicating code within them, use Extract Superclass (375). In this case, any delegating methods on the source superclass no longer need a guard if the default behavior is moved to the delegate
+    superclass.
+- Test.
+- Repeat until all the methods of the subclass are moved.
+
+#### 12.10 replace superclass with delegate
+
+##### 12.10.1 motivations
+
+1. if functions of the superclass don’t make sense on the subclass, that’s a sign that I shouldn’t be using inheritance to use the superclass’s functionality.
+2. it should also be true that every instance of the subclass is an instance of the superclass and a valid object in all cases where we’re using the superclass.
+3. it should also be true that every instance of the subclass is an instance of the superclass and a valid object in all cases where we’re using the superclass.
+4. some people advise avoiding inheritance entirely—but I don’t agree with that. Provided the appropriate semantic conditions apply (every method on the supertype applies to the subtype, every instance of the subtype is an instance of the supertype), inheritance is a simple and effective mechanism. 
+
+##### 12.10.2 mechanics
+
+- Create a field in the subclass that refers to the superclass object. Initialize this delegate reference to a new instance.
+- For each element of the superclass, create a forwarding function in the subclass that forwards to the delegate reference. Test after forwarding each consistent group.
+  - Most of the time you can test after each function that’s forwarded, but, for example, get/set pairs can only be tested once both have been moved.
+- When all superclass elements have been overridden with forwarders, remove the inheritance link
 
