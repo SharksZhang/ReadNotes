@@ -137,9 +137,8 @@ Sadly, however, naming is one of the two hard things [mf-2h] in programming.So, 
 
 ### 3.2 Duplicated Code
 
-- **when you have the same expression in  two  methods  of  the  same  class**.Then  all  you  have  to  do  is  **Extract  Function**
-  (106) and invoke the code from both places.
-
+- **when you have the same expression in  two  methods  of  the  same  class**.Then  all  you  have  to  do  is  **Extract  Function** (106) and invoke the code from both places.
+  
 - **If you have code that’s similar, but not  quite  identical,**  see  if  you  can  use  **Slide  Statements  (223)**  to  arrange  the  code
   so the similar items are all together for **easy extraction.**
 
@@ -200,9 +199,8 @@ The most obvious form of global data is **global variables**, but we also see th
 
 - You can use **Encapsulate Variable (132)** to ensure that all updates occur through narrow functions that can be easier to monitor and evolve
 
-- If a variable is being updated to store different things, use **Split Variable (240)** both to keep them sepa-
-  rate  and  avoid  the  risky  update
-
+- If a variable is being updated to store different things, use **Split Variable (240)** both to keep them separate  and  avoid  the  risky  update
+  
 -  Try  as  much  as  possible  to  move  logic  out  of code that processes the update by using **Slide Statements (223)** and **Extract Function (106)** to separate the side-effect-free code from anything that performs the update.
 
 - In APIs, use **Separate Query from Modifier (306)** to ensure callers don’t need to call code that has side effects unless they really need to. 
@@ -239,7 +237,7 @@ system’s capabilities change.
 
 You whiff this when, **every time you make a change, you have to make a lot of little edits to a lot  of  different  classes.**
 
-- In  this  case,  you  want  to  use  **Move  Function  (198)**  and  Move  Field  (207)  to  put all the changes into a single module.
+- In  this  case,  you  want  to  use  **Move  Function  (198)**  and  **Move  Field  (207)**  to  put all the changes into a single module.
 - If you have a bunch of functions operating on similar data, use **Combine Functions into Class (144)**
 - If you have functions that are transforming or enriching a data structure, use **Combine Functions into Transform(149).**
 - **Split Phase (154)** is often useful here if the common functions can combine their output for a consuming phase of logic.
@@ -278,7 +276,7 @@ action：
 
 1. You  can  move  out  of  the  primitive  cave  into  the  centrally  heated  world  of meaningful types by using **Replace Primitive with Object (174)**
 2. If the primitive is a type code controlling conditional behavior, use **Replace  Type  Code  with  Subclasses (362)** followed by **Replace  Conditional  with  Polymorphism  (272).**
-3. Groups  of  primitives  that  commonly  appear  together  are  data  clumps  and should be civilized with **Extract  Class  (182)** and Introduce  Parameter  Object  (140).
+3. Groups  of  primitives  that  commonly  appear  together  are  data  clumps  and should be civilized with **Extract  Class  (182)** and **Introduce  Parameter  Object  (140).**
 
 ### 3.12 Repeated Switches
 
@@ -292,7 +290,7 @@ Against  the  dark  forces  of  such  repetition,  polymorphism provides an eleg
 
  We  ﬁnd  that  pipeline  operations,  such  as ﬁlter and map, help us quickly see the elements that are included in the processing and what is done with them.
 
--  Replace Loop with Pipeline(231) 
+-  **Replace Loop with Pipeline(231)** 
 
 ### 3.14 Lazy Element 
 
@@ -334,7 +332,7 @@ You see message chains when a client asks one object for another object, which t
 
 1. After a while, it is time to use **Remove Middle Man (192)** and talk to the object that really knows what’s going on.
 2. If only a  few  methods  aren’t  doing  much,  use  **Inline  Function  (115)**  to  inline  them  into the  caller. 
-3.  If  there  is  additional  behavior,  you  can  use  Replace  Superclass  with Delegate  (399) or Replace  Subclass  with  Delegate  (381) to fold the middle man into the  real  object.  That  allows  you  to  extend  behavior  without  chasing  all  that delegation.
+3.  If  there  is  additional  behavior,  you  can  use  **Replace  Superclass  with Delegate  (399)** or **Replace  Subclass  with  Delegate  (381)** to fold the middle man into the  real  object.  That  allows  you  to  extend  behavior  without  chasing  all  that delegation.
 
 ### 3.19 Insider Trading
 
@@ -411,7 +409,7 @@ The reason we mention comments here is that comments are often used as a deodora
 -  but  test  coverage  analysis  is only good for identifying untested areas of the code, not for assessing the quality of a test suite.
 - When  you  get  a  bug  report, start by writing a unit test that exposes the bug.
 
-### 5. Introducing the Catalog
+## 5. Introducing the Catalog
 
 - I  emphasize  the  safe  way  of  doing  the  refactoring—which is to take very small steps and test after every one. At work, I usually take larger steps  than  some  of  the  baby  steps described,  but  if  I  run  into  a  bug,  I  back  out the last step and take the smaller steps. 
 -  It’s  likely  you’ll  vary  them  as you get more practice in refactoring, and that’s ﬁne. Just remember that the key is to take small steps—and the trickier the situation, the smaller the steps.
@@ -422,7 +420,7 @@ The reason we mention comments here is that comments are often used as a deodora
 
 
 
-### 6. A First Set of Refactorings
+## 6. A First Set of Refactorings
 
  a set of refactorings that I consider the most useful to learn ﬁrst.
 
@@ -641,7 +639,7 @@ One  of  the  reasons  I  like  to  do  combine  functions  is  to  avoid  dupli
 - Apply Extract Function (106) on the ﬁrst-phase code, returning the intermediate data structure.
   - It’s also reasonable to extract the ﬁrst phase into a transformer object.
 
-### 7. Encapsulation
+## 7. Encapsulation
 
 Data structures are the most common secrets, and I can hide data structures by encapsulating them with **Encapsulate Record (162)** and **Encapsulate Collection (170)**.Even primitive data values can be encapsulated with **Replace Primitive with Object(174)**
 
@@ -817,7 +815,7 @@ If I find a clearer way to do something, I replace the complicated way with the 
 - Run static checks.
 - Run tests to compare the output of the old algorithm to the new one. If they are the same, you’re done. Otherwise, use the old algorithm for comparison in testing and debugging.
 
-### 8. Moving Features
+## 8. Moving Features
 
 I use **Move Function (198)** to move functions between classes and other
 modules. Fields can move too, with **Move Field (207)**.
@@ -964,7 +962,7 @@ Like most programmers, I was taught to use loops to iterate over a collection of
 - Once all behavior is removed from the loop, remove it.
   - If it assigns to an accumulator, assign the pipeline result to the accumulator.
 
-### 9. Organizing Data
+## 9. Organizing Data
 
 A value that’s used for different purposes is a breeding ground for confusion and bugs—so, when I see one, I use **Split Variable (240)** to separate the usages. As with any program element, getting a variable’s name right is tricky and important, so **Rename Variable (137)** is often my friend.
 
@@ -1042,7 +1040,7 @@ for easy reference later. These kinds of variables should be set only once. If t
 
 
 
-### 10. simplifying Condition
+## 10. simplifying Condition
 
 #### 10.1 Decompost Conditional
 
@@ -1126,7 +1124,7 @@ As with any large block of code, I can make my intention clearer by decomposing 
 
 
 
-### 11.  refactoring APIs
+## 11.  refactoring APIs
 
 - A good API clearly separates any functions that update data from those that only read data. If I see them combined, I use **Separate Query from Modifier (306)** to tease them apart.I can unify functions that only vary due to a value with **Parameterize Function (310).**Some parameters, however, are really just a signal of an entirely different behavior and are best excised with **Remove Flag Argument(314**).
 
@@ -1330,7 +1328,7 @@ If that’s the case, and the function isn’t too complex, then a command objec
 
 
 
-### chapter12: Dealing with inherantence hierarchy
+## chapter12: Dealing with inherantence hierarchy
 
 - features need to move up or down the inheritance hierarchy. Several
   refactorings deal with that: **Pull Up Method (350)**, **Pull Up Field (353)**, **Pull Up Constructor Body (355)**, **Push Down Method (359)**, and **Push Down Field (361)**.

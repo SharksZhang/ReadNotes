@@ -48,6 +48,14 @@
 
 性质在满二叉树中，叶结点的个数比分支结点个数多1。
 
+
+
+#### 知识点
+
+二叉树是否对称
+
+两个二叉树相同
+
 ### 2. sort
 
 #### 2.1 bubble sort
@@ -129,4 +137,27 @@ Shortest Paths
 • Text justification
 • Perfect-information Blackjack
 • Parent pointers
+
+
+
+### 图
+
+#### 异或
+
+性质
+
+```
+1. 交换律 
+2、结合律（即(a^b)^c == a^(b^c)） 
+3、对于任何数x，都有x^x=0，x^0=x 
+4、自反性 A XOR B XOR B = A xor 0 = A
+```
+
+使用异或的性质可以求 唯一奇数个数和唯一偶数个数
+
+#### 二叉查找树
+
+1. 查找
+2. 插入
+3. 删除(未完成)
 
