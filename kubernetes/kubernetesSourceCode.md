@@ -50,3 +50,7 @@ Highlights:
 - If the object is not being deleted and does not have the finalizer registered, then add the finalizer and update the object in Kubernetes.
 - If object is being deleted and the finalizer is still present in finalizers list, then execute the pre-delete logic and remove the finalizer and update the object.
 - Ensure that the pre-delete logic is idempotent.
+
+```
+kubectl config use-context docker-for-deskto
+```
