@@ -494,6 +494,8 @@ reflect.valueof(e).MethodByName("updateAge").Call([]reflect.Value(reflect.ValueO
 
 用于写动态程序
 
+反射会大大降低程序的性能
+
 ##### 万能程序
 
 ```
@@ -503,3 +505,107 @@ reflect.DeepeEqual()
 
 
 ##### 不安全编程
+
+package unsafe
+
+1. 强制类型转换
+2. atomic
+
+atomic包的使用
+
+#### 14 常见架构模式
+
+##### pipe-filter framework
+
+##### micro-kernel framework
+
+#### 15常见任务
+
+##### 内置json解析
+
+FeildTag 实现原理？？？
+
+json marshal 和unmarshal实现原理。、？？？
+
+反射性能比较低，对于高性能使用的不推荐。
+
+##### easyjson 
+
+easyjson并未使用反射，而是直接生成代码，性能更好
+
+##### http服务
+
+```
+http.handleFunc
+http.listenAndServer(":8080", nil) 第二个参数为路由规则
+```
+
+#### 性能调优
+
+![Screen Shot 2019-09-10 at 10.41.35 AM](Screen Shot 2019-09-10 at 10.41.35 AM.png)
+
+runtime  pprof
+
+1. 在程序中内嵌代码
+2. http
+3. ![Screen Shot 2019-09-10 at 10.59.03 AM](../../../../../Desktop/Screen Shot 2019-09-10 at 10.59.03 AM.png)
+
+##### 性能调优
+
+![Screen Shot 2019-09-10 at 11.14.49 AM](Screen Shot 2019-09-10 at 11.14.49 AM.png)
+
+![Screen Shot 2019-09-10 at 11.15.14 AM](Screen Shot 2019-09-10 at 11.15.14 AM-8128700.png)
+
+##### 别让性能被锁住
+
+加锁的性能损失？
+
+1. 减少锁的影响范围
+2. 减少发生锁冲突的概率
+   1. sync.Map
+   2. ConcurrentMap
+3. 避免锁的使用
+   1. LAMX disruptor
+
+sync.Map 的原理？
+
+1. 适合读多写少，且key相对稳定的环境(在写得多的情况下比普通加锁的的map性能更差)
+2. 采用了空间换时间的方案
+
+concurrent Map ?
+
+将大的map分割成小的map
+
+##### GC友好的代码
+
+染色标记GC
+
+1. 避免内存的分配和复制
+   1. 复杂对象尽量传递引用
+      1. 数组的传递
+      2. 结构体传递
+   2. ![Screen Shot 2019-09-10 at 11.41.13 AM](Screen Shot 2019-09-10 at 11.41.13 AM.png)
+   3. go tool  trace
+   4. 为什么在传值和传引用对gc的压力不同
+
+2. 避免内存分配和复制
+   1. 初始化至合适的大小
+      1. 自动扩容是有代价的
+   2. 复用内存
+
+
+
+#### 16 高可用服务设计
+
+##### 高效字符串连接
+
+字符串拼接的几种方式
+
+strings.builder
+
++
+
+bytes.buffer
+
+stringBuilder实现原理？
+
