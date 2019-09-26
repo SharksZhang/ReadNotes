@@ -76,7 +76,7 @@
 
 #### 2.最长上升子序列问题
 
-##### Best Time to Buy and Sell Stock
+##### Best Time to Buy and Sell Stock√
 
 ##### AcWing 895. 最长上升子序列√
 
