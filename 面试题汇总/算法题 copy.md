@@ -265,3 +265,6 @@ haystack.startsWith(needle, i);
 indexOf()的区别
 ```
 
+#### 快速排序
+
+##### acwing785. 快速排序√
