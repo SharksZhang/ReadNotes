@@ -1,5 +1,11 @@
 package binarysearchtree;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class BSTree {
     BNode root;
 
@@ -81,8 +87,11 @@ public class BSTree {
     }
 
     public boolean remove(int val) {
-
-    }
+		int[] arr = new int[2];
+		Arrays.stream(arr).boxed().collect(Collectors.toList());
+		arr.s
+		List<int[]> ints = Arrays.asList(arr);
+	}
 }
 
 class BNode {
