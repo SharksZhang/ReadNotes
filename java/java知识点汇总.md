@@ -13,8 +13,16 @@
 
    具体来说 JDK 其实包含了 JRE，同时还包含了编译 java 源码的编译器 javac，还包含了很多 java 程序调试和分析的工具。简单来说：如果你需要运行 java 程序，只需安装 JRE 就可以了，如果你需要编写 java 程序，需要安装 JDK。
 
-2. java的项目结构，java安装配置的各项的作用
+2. classpath，JAVA_HOME的作用及JAVA环境变量配置
 
+  1. CLASSPATH环境变量。作用是指定类搜索路径，要使用已经编写好的类，前提当然是能够找到它们了，JVM就是通过CLASSPATH来寻找类的。我们需要把jdk安装目录下的lib子目录中的dt.jar和tools.jar设置到CLASSPATH中，当然，当前目录“.”也必须加入到该变量中。这里CLASSPATH为：
+  
+     .;C:/Program Files/Java/jdk1.6.0_21/lib/dt.jar;C:/Program Files/Java/jdk1.6.0_21/lib/tools.jar
+  
+  2. JAVA_HOME环境变量。它指向jdk的安装目录，Eclipse/NetBeans/Tomcat等软件就是通过搜索JAVA_HOME变量来找到并使用安装好的jdk。这里JAVA_HOME为：
+  
+     C:/Program Files/Java/jdk1.6.0_21
+  
    
 
 #### 基础问题
@@ -30,7 +38,7 @@
    4. 判断数据域相同
    
 3. java的8中基本数据类型是什么
-   
+  
    1. byte、boolean、char、short、int、float、long、double
    
 4. hashcode方法的作用？hashCode方法和equeals方法的关系？
@@ -38,7 +46,7 @@
    2. hashCode()用来计算hash值，用于HashMap和Set。具体细节，和map处相同
    
 5. hashCode的作用？hashCode是如何实现才高效，object中的hashcode是如何实现的？√
-   
+  
    1. object中的hash调用native方法，根据内存地址生成
    
 6. final在java中的作用？
@@ -87,7 +95,7 @@
     4. 抽象类可以有构造函数，接口不可以
     
 13. 抽象类能使用final修饰吗？
-    
+  
     1. 定义抽象类就是为了让别人继承，使用final修饰没有意义。
     
 14. java四种修饰符是什么？
@@ -96,7 +104,10 @@
     3. protected   类内部， 同包， 不同包的子类
     4. public   类内部 同一个工程
     
-15. switch 支持类型
+15. switch 支持的类型
+
+    1. byte short char int 枚举，字符串
+    2. 所有这些类型最终都是转换为int
 
 16. 为什么要使用克隆？
 
@@ -140,6 +151,7 @@
                //这一点不同于对外部资源（如文件流）的释放
            }
        }
+       
        ```
 
 18. 深拷贝和浅拷贝区别是什么？
@@ -180,7 +192,7 @@
       1. "".getBytes();可以用参数指定字符集
       2. new String() 同样可以指定编码集
 7.  String 类的常用方法都有那些？
-   1. ndexOf()：返回指定字符的索引。
+   1. indexOf()：返回指定字符的索引。
    2. charAt()：返回指定索引处的字符。
    3. replace()：字符串替换。
    4. trim()：去除字符串两端空白。
@@ -194,7 +206,7 @@
 
 #### 日期和时间
 
-1. Date类(大多数方法已经过时了)
+1. Date类(大多数方法已经过时了)方法
 
    1. java.lang.System.CurrentMillis()获取时间戳
    2. date可以无参数保存当前时间，也可以使用ms数创建。
@@ -258,8 +270,8 @@
          1. IOException
 
 3. 异常和错误的区别是什么
-   
-   1. 异常和错误的区别：异常能被程序本身可以处理，错误是无法处理
+  
+   1. 异常和错误的区别：异常能被程序本身可以处理，错误是无法处理。
 4. 异常的处理方式？分别对应那种场景
    1. try-catch-finally：
    2. throws + 异常类型
@@ -268,7 +280,7 @@
    2. finally一般作用在try-catch代码块中，在处理异常的时候，通常我们将一定要执行的代码方法finally代码块中，表示不管是否出现异常，该代码块都会执行，一般用来存放一些关闭资源的代码。
    3. finalize是一个方法，属于Object类的一个方法，而Object类是所有类的父类，该方法一般由垃圾回收器来调用，当我们调用System的gc()方法的时候，由垃圾回收器调用finalize(),回收垃圾。
 6. try-catch-finally 中哪个部分可以省略？
-   
+  
    1. catch可以省略
 
 #### 多线程
@@ -321,10 +333,13 @@
       2. 在继承方式中可以考虑使用当前类作为锁。
    2. 同步方法:非静态同步方法的锁是this。静态的同步方法的锁是当前类本身。
    3. ReentrantLock
+   4. 原子变量
 
 9. 线程的通信
 
    1. wait  notify 唤醒被wait的线程，多个线程被wait，唤醒优先级高的。 notifyall 唤醒所有wait的方法。
+   2. condition
+   3. countDownLatch, samphere, 
 
 10. sleep和wait的区别
 
