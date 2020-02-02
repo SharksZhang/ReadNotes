@@ -178,9 +178,10 @@
 	特点：
 	①通过select查询完的结果 ，是一个虚拟的表格，不是真实存在
 	② 要查询的东西 可以是常量值、可以是表达式、可以是字段、可以是函数
-	
-	
-	
+
+
+​	
+​	
 
 ```mysql
 基础查询练习题：
@@ -349,10 +350,11 @@ order by 排序的字段|表达式|函数|别名 【asc|desc】
 			when 条件2 then 要显示值2或语句2
 			else 要显示的值n或者语句n
 			end
-			
-	
-		
-		
+
+
+​	
+​		
+​		
 	5、其他函数
 		version版本
 		database当前库
@@ -399,13 +401,14 @@ SELECT first_name, SUBSTR(first_name, 1, 1), length(first_name) FROM employees O
 
 
 ##进阶5：分组查询
-	
+
 	语法：
 	select 查询的字段，分组函数
 	from 表
 	group by 分组的字段
-	
-	
+
+
+​	
 	1.SELECT SUM(salary), AVG(salary), COUNT(salary), department_id  FROM employees GROUP BY department_id;
 	
 	2.按照表达式分组
@@ -415,14 +418,14 @@ SELECT first_name, SUBSTR(first_name, 1, 1), length(first_name) FROM employees O
 
 
 ​	
-	特点：
-	1、可以按单个字段分组
-	2、和分组函数一同查询的字段最好是分组后的字段
-	3、分组筛选
-			针对的表	位置			关键字
-	分组前筛选：	原始表		group by的前面		where
-	分组后筛选：	分组后的结果集	group by的后面		having(对分组结果进行筛选)
-	
+​	特点：
+​	1、可以按单个字段分组
+​	2、和分组函数一同查询的字段最好是分组后的字段
+​	3、分组筛选
+​			针对的表	位置			关键字
+​	分组前筛选：	原始表		group by的前面		where
+​	分组后筛选：	分组后的结果集	group by的后面		having(对分组结果进行筛选)
+​	
 	4、可以按多个字段分组，字段之间用逗号隔开
 	5、可以支持排序
 	6、having后可以支持别名
@@ -439,7 +442,7 @@ SELECT first_name, SUBSTR(first_name, 1, 1), length(first_name) FROM employees O
 
 ##进阶6：多表连接查询
 
-	
+
 	当查询的字段来自于多个表时，就会用到连接查询
 	
 	笛卡尔乘积：如果连接条件省略或无效则会出现 结果为 m * n行
@@ -531,15 +534,19 @@ sql92
 	2、子查询可以放在from后面、select后面、where后面、having后面，exists后面但一般放在条件的右侧
 		 1. select 后：
 		 			仅支持标量子查询
+		 			SELECT d.*, (SELECT COUNT(*) FROM employees e WHERE e.department_id = 					 	  d.department_id ) count FROM departments d;
 		 2.from后
 		 			仅支持表子查询
 		 3. where或having后面：
 		 			标量子查询
+		 			SELECT * FROM employees WHERE salary > (SELECT salary FROM employees WHERE last_name 					= 'Abel') ;
 		 			列子查询
 		 			
 		 			行子查询
-		 	4. exists
-		 		 表子查询
+		 			SELECT * FROM employees WHERE (employee_id, salary) = (SELECT MIN(employee_id), MAX(salary) FROM employees)
+		 	4. exists(相关子查询)：判断子查询是否存在
+		 		 表子查询 
+		 		 SELECT EXISTS (SELECT 	employee_id FROM employees);
 	3、子查询优先于主查询执行，主查询使用了子查询的执行结果
 	4、子查询根据查询结果的行数不同分为以下两类：
 	① 单行子查询
@@ -553,12 +560,45 @@ sql92
 		结果集有多行
 		一般搭配多行操作符使用：any、all、in、not in
 		in： 属于子查询结果中的任意一个就行
+		any:和子查询返回的某一个值比较
+		all：和子查询返回的所有值比较
 		any和all往往可以用其他查询代替
 	
 	1. 标量子查询(结果集只有一行一列)
 	2. 列子查询(结果集只有一列多行)
 	3. 行子查询(结果集为一行多列)
 	4. 表子查询(结果集一般为多行多列)
+
+```
+#1
+SELECT last_name, salary
+FROM employees
+Where  department_id = (SELECT department_id FROM employees WHERE last_name = 'zlotkey');
+
+#2
+SELECT employee_id,last_name,salary FROM employees WHERE salary > (SELECT AVG(salary) FROM employees);
+
+
+#3
+
+SELECT last_name, salary
+FROM employees e
+    INNER JOIN (
+        SELECT AVG(salary) a, department_id
+        FROM employees
+        GROUP BY department_id) as avg
+    ON e.department_id = avg.department_id
+where salary >  avg.a;
+
+#4
+SELECT employee_id, last_name  FROM employees WHERE employees.department_id IN (SELECT DISTINCT department_id FROM employees WHERE last_name LIKE '%u%');
+
+#6
+SELECT last_name, salary, manager_id FROM employees WHERE manager_id IN (SELECT manager_id FROM employees WHERE last_name = 'K_ing');
+
+```
+
+
 
 ##进阶8：分页查询
 
@@ -574,7 +614,11 @@ sql92
 	【group by 分组字段】
 	【having 条件】
 	【order by 排序的字段】
-	limit 【起始的条目索引，】条目数;
+	limit offet,size;【起始的条目索引，】条目数;
+	offset为0可以省略
+	offset要显示条目的其实索引(起始索引从0开始)
+	size要显示的条目数
+	SELECT * fROM EMPLOYEES LIMIT 5;
 
 特点：
 
@@ -590,7 +634,7 @@ sql92
 ##进阶9：联合查询
 
 引入：
-	union 联合、合并
+	union 联合、合并：将多条查询语句的结果合并成一个结果
 
 语法：
 
@@ -599,9 +643,13 @@ sql92
 	select 字段|常量|表达式|函数 【from 表】 【where 条件】 union  【all】
 	.....
 	select 字段|常量|表达式|函数 【from 表】 【where 条件】
+	
+	应用场景
+	要查询的结果来自多个表，且多个表没有直接的连接关系，但查询的信息一致时
 
 特点：
 
+	可以把两个表中查询到的数据联合起来
 	1、多条查询语句的查询的列数必须是一致的
 	2、多条查询语句的查询的列的类型几乎相同
 	3、union代表去重，union all代表不去重
@@ -622,6 +670,16 @@ sql92
 	3、不可以为空的字段，必须插入值
 	4、字段个数和值的个数必须一致
 	5、字段可以省略，但默认所有字段，并且顺序和表中的存储顺序一致
+	1.第一种方式
+	Insert INTO beauty(id, name, sex, phone) VALUES (14, "关晓彤", "女", "110")，(15, "关晓彤", "女", "110");
+	
+	2.第二种方式
+	insert into 表名 
+	set 列名=值，列名=值
+	
+	方式一支持插入多行
+	方式一支持子查询
+	INSERT INTO BEAUTY(ID, NAME, PHONE) SELECT 26 ,"AAA","181"
 
 ###修改
 
@@ -635,6 +693,12 @@ sql92
 	set 字段=新值，字段=新值
 	where 连接条件
 	and 筛选条件
+	
+	update 表1 别名
+	inner|left|right join 表2 别名
+	on 连接条件
+	set 列 = 值
+	where 筛选条件；
 
 
 ###删除
@@ -650,10 +714,12 @@ sql92
 	where 连接条件
 	and 筛选条件;
 
+​	delete 表1 别名 inner|left」right|join 表二 别名 on 连接条件 where
+
 
 方式2：truncate语句
 
-	truncate table 表名
+	truncate table 表名  删除整个表
 
 
 两种方式的区别【面试题】
@@ -673,22 +739,23 @@ sql92
 库的管理：
 
 	一、创建库
-	create database 库名
+	create database [] 库名
 	二、删除库
 	drop database 库名
-表的管理：
-	#1.创建表
 	
+	更改字符集
+	AlTER DATABASE books ChARACTER SET gbk;
+表的管理：
+
+	#1.创建表
+
 	CREATE TABLE IF NOT EXISTS stuinfo(
 		stuId INT,
 		stuName VARCHAR(20),
 		gender CHAR,
 		bornDate DATETIME
+			)
 
-
-​	
-	);
-	
 	DESC studentinfo;
 	#2.修改表 alter
 	语法：ALTER TABLE 表名 ADD|MODIFY|DROP|CHANGE COLUMN 字段名 【字段类型】;
@@ -709,12 +776,27 @@ sql92
 
 
 ​	
-	#3.删除表
-	
+​	#3.删除表
+​	
 	DROP TABLE [IF EXISTS] studentinfo;
 
+​	表的复制
 
-​	
+```
+仅复制表的结构
+CREATE TABLE copy LIKE author;
+
+复制表的结构 + 数据
+CREATE TABLE copy2 SELECT * FROM author
+
+只复制部分
+CREATE TABLE copy2 SELECT * FROM author where nation = 'china'
+
+只复制某些字段
+CREATE TABLE clpy4 SELECT id, au_name FROM author WHERE 1=2;
+```
+
+
 
 
 ###常见类型
@@ -852,8 +934,8 @@ sql92
 
 
 ​	
-	4、删除视图的数据
-	DELETE FROM my_v4;
+​	4、删除视图的数据
+​	DELETE FROM my_v4;
 ###某些视图不能更新
 	包含以下关键字的sql语句：分组函数、distinct、group  by、having、union或者union all
 	常量视图
