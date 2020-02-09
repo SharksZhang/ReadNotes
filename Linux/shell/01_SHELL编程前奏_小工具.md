@@ -507,6 +507,8 @@ Tab只能补全==命令和文件== （RHEL6/Centos6）
 
 
 # rm -f file*
+# ls file?
+# ls file[1-3]
 # cp *.conf  /dir1
 # touch file{1..5}
 ~~~

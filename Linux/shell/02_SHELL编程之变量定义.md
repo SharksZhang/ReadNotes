@@ -48,7 +48,7 @@ typora-root-url: ..\..\pictures
 
 ##2. shell简介
 
-![00_shell介绍](/00_shell介绍.png)
+![00_shell介绍](00_shell介绍.png)
 
 **总结：**
 
