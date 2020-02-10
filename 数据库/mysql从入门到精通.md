@@ -21,6 +21,7 @@
 		分页查询       ★              
 		union联合查询	√			
 		
+
 	六、DML语言的学习    ★             
 		插入语句						
 		修改语句						
@@ -289,28 +290,28 @@ order by 排序的字段|表达式|函数|别名 【asc|desc】
 
 ​	
 ###进阶4：常见函数
-	一、单行函数
-	1、字符函数
-		concat拼接
-		SELECT CONCAT('a', 'b', 'c') AS 结果;
-		null和任何字段拼接都是null
-		substr截取子串
-		upper转换成大写
-		SELECT UPPER('john');
-		lower转换成小写
-		trim去前后指定的空格和字符
-		SELECT TRIM (’a‘ FROM 'aaaJOHNaaa')也可以取除指定字符
-		ltrim去左边空格
-		rtrim去右边空格
-		replace替换
-		SELECT REPLACE('I AM CHINESE', 'CHINESE', 'CH')
-		lpad左填充
-		SELECT LPAD("JOHN", 10, '*') AS out_put
-		rpad右填充
-		instr(str,substr)返回子串第一次出现的索引
-		length 获取字节个数
-		SELECT LENGTH('JOHN')
-		
+​	一、单行函数
+​	1、字符函数
+​		concat拼接
+​		SELECT CONCAT('a', 'b', 'c') AS 结果;
+​		null和任何字段拼接都是null
+​		substr截取子串
+​		upper转换成大写
+​		SELECT UPPER('john');
+​		lower转换成小写
+​		trim去前后指定的空格和字符
+​		SELECT TRIM (’a‘ FROM 'aaaJOHNaaa')也可以取除指定字符
+​		ltrim去左边空格
+​		rtrim去右边空格
+​		replace替换
+​		SELECT REPLACE('I AM CHINESE', 'CHINESE', 'CH')
+​		lpad左填充
+​		SELECT LPAD("JOHN", 10, '*') AS out_put
+​		rpad右填充
+​		instr(str,substr)返回子串第一次出现的索引
+​		length 获取字节个数
+​		SELECT LENGTH('JOHN')
+​		
 	2、数学函数
 		round 四舍五入
 		rand 随机数
@@ -355,13 +356,13 @@ order by 排序的字段|表达式|函数|别名 【asc|desc】
 ​	
 ​		
 ​		
-	5、其他函数
-		version版本
-		database当前库
-		user当前连接用户
-		SELECT VERSION();
-		SELECT DATABASE();
-		SELECT USER();
+​	5、其他函数
+​		version版本
+​		database当前库
+​		user当前连接用户
+​		SELECT VERSION();
+​		SELECT DATABASE();
+​		SELECT USER();
 
 ​	
 
@@ -409,8 +410,8 @@ SELECT first_name, SUBSTR(first_name, 1, 1), length(first_name) FROM employees O
 
 
 ​	
-	1.SELECT SUM(salary), AVG(salary), COUNT(salary), department_id  FROM employees GROUP BY department_id;
-	
+​	1.SELECT SUM(salary), AVG(salary), COUNT(salary), department_id  FROM employees GROUP BY department_id;
+​	
 	2.按照表达式分组
 	SELECT COUNT(*), LENGTH(last_name) FROM employees group by LENGTH(last_name);
 	3.按照多个字段分组
@@ -426,9 +427,9 @@ SELECT first_name, SUBSTR(first_name, 1, 1), length(first_name) FROM employees O
 ​	分组前筛选：	原始表		group by的前面		where
 ​	分组后筛选：	分组后的结果集	group by的后面		having(对分组结果进行筛选)
 ​	
-	4、可以按多个字段分组，字段之间用逗号隔开
-	5、可以支持排序
-	6、having后可以支持别名
+​	4、可以按多个字段分组，字段之间用逗号隔开
+​	5、可以支持排序
+​	6、having后可以支持别名
 
 ```
 练习
@@ -748,14 +749,14 @@ SELECT last_name, salary, manager_id FROM employees WHERE manager_id IN (SELECT 
 表的管理：
 
 	#1.创建表
-
+	
 	CREATE TABLE IF NOT EXISTS stuinfo(
 		stuId INT,
 		stuName VARCHAR(20),
 		gender CHAR,
 		bornDate DATETIME
 			)
-
+	
 	DESC studentinfo;
 	#2.修改表 alter
 	语法：ALTER TABLE 表名 ADD|MODIFY|DROP|CHANGE COLUMN 字段名 【字段类型】;
@@ -775,10 +776,9 @@ SELECT last_name, salary, manager_id FROM employees WHERE manager_id IN (SELECT 
 	ALTER TABLE studentinfo DROP COLUMN email;
 
 
-​	
 ​	#3.删除表
 ​	
-	DROP TABLE [IF EXISTS] studentinfo;
+​	DROP TABLE [IF EXISTS] studentinfo;
 
 ​	表的复制
 
@@ -798,28 +798,91 @@ CREATE TABLE clpy4 SELECT id, au_name FROM author WHERE 1=2;
 
 
 
-
 ###常见类型
 
 	整型：
-		
+		TinyInt(1)/Smallint(2字节)/Mediumint（3字节）/Int\integer（4字节）/BigInt（8字节，有符号）
+		默认是无符号，有符号使用  t2 Int UNSIGNED设置
+		1. 如果不设置无符号还是有符号，默认是有符号，如果想设置无符号，需要添加unsigned关键字
+		2.如果插入数值超出了正型的范围，会报out of range异常，并且插入临界值
+		3. 如果不设置长度，会有默认长度，长度表示显示结果的宽度
 	小数：
 		浮点型
+			fload(M, D)  4字节
+			double(M, D) 8字节
 		定点型
-	字符型：
+			DEC(M, D)
+			DECIMAL(M, D)
+		特点：
+		1. M：整数和小数的位数纸盒 和 D：小数点后几位  如果插入式超出临界值，则插入临界值
+		2. DEC默认 M：10 D:0  float 和double按照插入的值决定
+		3. 定点型精确度较高，如果要求插入数值精度要求较高，用DEC
+	
+	字符型(字符，二进制)：
+		较短的文本：char（m) varchar(m)
+		1. m表示 字符数。
+		2. char表示固定长度  varchar 可变长度。varchar 效率较低
+		较长的文本：text、blob（较大的二进制）
+		Enum： c1 ENUM('a','b', 'c')
+		Set : s1 SET('a', 'b', 'c', 'd')
+		binary 和varbinary用以保存较短的二进制
+		
+		
 	日期型：
+	Date
+	datetime：和时区有关
+	timestamp
+	time
+	year
 	Blob类型：
 
 
 
 ###常见约束
 
-	NOT NULL
-	DEFAULT
-	UNIQUE
-	CHECK
-	PRIMARY KEY
-	FOREIGN KEY
+	
+	一种限制，由于限制表中的数据，为了保证表中的数据的准确性和可靠性
+	CREATE TABLE 表名（
+		字段名 字段类型 约束
+	）
+	
+	创建约束的时机：1. 创建表时 2.修改表时
+	
+	约束的添加分类： 
+		列级约束：语法上六大约束都支持，外键约束没有效果
+		表计约束：除了非空、默认，其他的都支持
+		CREATE TABLE 表名（
+			字段名 字段类型 列级约束，
+			字段名 字段类型，
+			表级约束
+		）
+	分类：六大约束
+		NOT NULL
+		DEFAULT：用于保证该字段有默认值
+		UNIQUE：字段值唯一性，可以为空
+		CHECK：检查约束【mysql不支持】
+		PRIMARY KEY  【】
+		FOREIGN KEY：外键，用于限制两个表的关系，
+		
+		一、创建表时添加约束
+		1. 添加列级约束
+		CREATE TABLE stuinfo(
+		id INT PRIMARY KEY,)
+		2. 表级约束
+		CREATE  TABLE stuinfo(
+		id INT,
+		stuname VARCHAR(20),
+		CONSTRAINT pk PRIMARY KEY(id)
+		CONSTRAINT uq UNIQUE(seat),
+		CONSTRAINT fk_stuinfo_major FOREIGN KEY(majorid) Prefrences major(id )
+		)
+	标识列
+	又称为自增长列
+	含义：可以不用手动的插入值，体统提供默认的序列值
+	
+	CREATE TABLE tab_identity(
+	id INT PRIMARY KEY AUTO_INCREMENT)
+		
 
 ##数据库事务
 ###含义
@@ -937,19 +1000,19 @@ CREATE TABLE clpy4 SELECT id, au_name FROM author WHERE 1=2;
 ​	4、删除视图的数据
 ​	DELETE FROM my_v4;
 ###某些视图不能更新
-	包含以下关键字的sql语句：分组函数、distinct、group  by、having、union或者union all
-	常量视图
-	Select中包含子查询
-	join
-	from一个不能更新的视图
-	where子句的子查询引用了from子句中的表
+​	包含以下关键字的sql语句：分组函数、distinct、group  by、having、union或者union all
+​	常量视图
+​	Select中包含子查询
+​	join
+​	from一个不能更新的视图
+​	where子句的子查询引用了from子句中的表
 ###视图逻辑的更新
-	#方式一：
-	CREATE OR REPLACE VIEW test_v7
-	AS
-	SELECT last_name FROM employees
-	WHERE employee_id>100;
-	
+​	#方式一：
+​	CREATE OR REPLACE VIEW test_v7
+​	AS
+​	SELECT last_name FROM employees
+​	WHERE employee_id>100;
+​	
 	#方式二:
 	ALTER VIEW test_v7
 	AS
