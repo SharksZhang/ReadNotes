@@ -104,5 +104,4 @@ chsh -s /bin/zsh
 
 10. 字体大小
 
-![Screen Shot 2020-02-27 at 10.32.28 PM](Screen Shot 2020-02-27 at 10.32.28 PM.png)
-
+![Screen Shot 2020-02-27 at 10.51.12 PM](Screen Shot 2020-02-27 at 10.51.12 PM.png)
