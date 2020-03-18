@@ -501,14 +501,17 @@ Tab只能补全==命令和文件== （RHEL6/Centos6）
 ~~~powershell
 *:	匹配0或多个任意字符
 ?:	匹配任意单个字符
-[list]:	匹配[list]中的任意单个字符,或者一组单个字符   [a-z]
+[list]:	匹配[list]中的任意单个字符,或者一组单个字符   [a-z] 
 [!list]: 匹配除list中的任意单个字符
 {string1,string2,...}：匹配string1,string2或更多字符串
+{1..13}匹配 1-13
 
 
 # rm -f file*
 # ls file?
 # ls file[1-3]
+# ls [1-13，10, 11] 匹配 1-1 和3 10匹配的是 1 和0.记住中括号是单个字符
+# ls file[123]
 # cp *.conf  /dir1
 # touch file{1..5}
 ~~~

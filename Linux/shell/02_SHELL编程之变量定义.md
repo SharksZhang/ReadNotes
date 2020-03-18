@@ -188,7 +188,7 @@ hello world
 -n:用来查看脚本的语法是否有问题
 ```
 
-2. 使用`source`命令读取脚本文件,执行文件里的代码
+2. 使用`source`命令读取脚本文件,执行文件里的代码，相当于当前终端执行
 
 ```powershell
 [root@MissHou shell01]# source first_shell.sh
@@ -227,6 +227,10 @@ hello world
 变量名：用来临时保存数据的
 
 变量值：就是临时的可变化的数据
+
+a=hello
+
+unset a
 
 ```powershell
 [root@MissHou ~]# A=hello			定义变量A
@@ -570,6 +574,7 @@ a b c
 [root@MissHou ~]# let ++j
 [root@MissHou ~]# echo $j
 2
+let n=n**3
 ```
 
 - 对==表达式==的值的影响

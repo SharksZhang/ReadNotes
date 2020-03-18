@@ -286,7 +286,7 @@ action：
 
 Against  the  dark  forces  of  such  repetition,  polymorphism provides an elegant weapon for a more civilized codebase.
 
-### 3.13 Loops
+### 3.13 Loop
 
  We  ﬁnd  that  pipeline  operations,  such  as ﬁlter and map, help us quickly see the elements that are included in the processing and what is done with them.
 
@@ -1101,7 +1101,7 @@ As with any large block of code, I can make my intention clearer by decomposing 
 - If classes do not exist for polymorphic behavior, create them together with a factory function to return the correct instance.
 - Use the factory function in calling code.
 - Move the conditional function to the superclass.
-  - If the conditional logic is not a self-contained function, use Extract Function (106) to make it so.
+  - If the conditional logic is not a self-contained function, use **Extract Function (106)** to make it so.
 - Pick one of the subclasses. Create a subclass method that overrides the
   conditional statement method. Copy the body of that leg of the conditional statement into the subclass method and adjust it to fit.
 - Repeat for each leg of the conditional.

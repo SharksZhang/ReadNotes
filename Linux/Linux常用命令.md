@@ -84,3 +84,29 @@
  	1. ifstat
       	1. 查看网络io
 
+env查看环境变量
+
+set查看所有变量
+
+ps auxf
+
+umask
+
+用来设置限制新建文件权限的掩码。
+
+
+
+Jobs:当前终端后台运行的程序
+
+
+
+Bc 用来计算小数计算 。basic calculator by 
+
+
+
+`<<<` denotes a here string.
+
+```bsh
+$ cat <<< 'hi there'
+hi there
+```
