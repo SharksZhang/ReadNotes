@@ -471,7 +471,7 @@ export PATH=/usr/local/mysql/bin:$PATH
 | -------------------- | -------------------------------------- | ---------------------------------------------------------- |
 | $HOME/.bashrc        | 当前用户的bash信息,用户==登录==时读取  | 定义别名、umask、函数等                                    |
 | $HOME/.bash_profile  | 当前用户的环境变量，用户==登录==时读取 |                                                            |
-| $HOME/.bash_logout   | 当前用户==退出==当前shell时最后读取    | 定义用户退出时执行的程序等                                 |
+| $HOME/.bash_logout   | 当前用户==退出==当前shell时最后读取p   | 定义用户退出时执行的程序等                                 |
 | /etc/bashrc          | 全局的bash信息，所有用户都生效         |                                                            |
 | /etc/profile         | 全局环境变量信息                       | 系统和所有用户都生效                                       |
 | \$HOME/.bash_history | 用户的历史命令                         | history -w   保存历史记录         history -c  清空历史记录 |
