@@ -78,11 +78,11 @@
      - host: foo.bar.com
        http:
          paths:
-         - path: /foo
+         - path: /foo/bar
            backend:
              serviceName: service1
              servicePort: 4200
-         - path: /bar
+         - path: /foo  
            backend:
              serviceName: service2
              servicePort: 8080
@@ -141,7 +141,7 @@
 
 
 
-## 5. servise的实现原理
+## 5. service的实现原理
 
 1. service的实现原理是使用iptables规则，当你配置cluster ip 当访问该cluster ip会被iptables转发到对应的pod ip。
 
@@ -173,6 +173,8 @@
 
       1. culster ip
 
+      2. service name: core dns. 
+      
          
 
 minikube在本地存在的问题
