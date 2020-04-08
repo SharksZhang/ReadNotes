@@ -271,5 +271,92 @@
 
       1. ReactiveWebServerFactoryCustomizer
 
+   ### 1.7 数据相关
+
+   #### 1.7.1 关系型数据
+
+   1. jdbc：数据源、jdbcTemplate、自动装配
+
+      1. 依赖
+
+         ```
+         <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-jdbc</artifactId>
+         </dependency>
+         ```
+
+      2. 数据源接口
+
+         1. javax.sql.DataSource  java定义的
+
+      3. jdbctemplate ： jdbc部分定义
+
+   2. JPA：实体映射关系、实体操作、自动装配
+
+      1. 依赖,依赖jdbc中的datasource
+
+         ```
+         <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-data-jpa</artifactId>
+         </dependency>
+         ```
+
+      2. 实体映射关系：表的映射关系
+
+      3. 实体操作：javax.persistence.EntityManager
+
+      4. 自动装配：HibernateJpaAutoConfiguration
+
+   3. 事务：Spring 事务抽象、JDBC事务处理、自动装配
+
+      1. 依赖
+
+         ```
+         <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-tx</artifactId>
+         </dependency>
+         ```
+
+      2. Spring事务抽象：PlatformTransactionManager:根接口
+
+      3. JDBC事务处理：DataSourceTransactionManager
+
+         1. 
+
+      4. 自动装配:
+
+   
+
+   ### 1.8 功能扩展
+
+   #### spring Boot应用
+
+   1. SpringApplication:失败分析、应用特性、事件监听
+      1. 失败分析：FailureAnalysisReporter
+   2. 应用特性
+      1. SpringApplication Fuent Api
+   3. spring Boot配置、profile、配置属性
+      1. 外部化配置
+         1. ConfigurationProperty
+      2. @profile
+      3. 配置属性
+         1. PropertySources
+   4. Spring boot Starter：Starter开发、最佳实践
+
+   
+
+   ### 1.9运维管理
+
+   #### Spring Boot Actuator
+
+   1. 断点：各类Web和JMX Endpoints
+      1. Web Endpoints
+      2. JMX Dndpoints
+   2. 健康检查:health、HealthIndicator
+   3. 指标:内建Metrics、自定义Metrics
+
    
 
