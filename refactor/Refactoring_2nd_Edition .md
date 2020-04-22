@@ -1042,7 +1042,7 @@ for easy reference later. These kinds of variables should be set only once. If t
 
 ## 10. simplifying Condition
 
-#### 10.1 Decompost Conditional
+#### 10.1 Decompose Conditional
 
 ##### 10.1.1 motivations
 
@@ -1075,6 +1075,10 @@ As with any large block of code, I can make my intention clearer by decomposing 
 
 - If both are part of normal behavior, I use a condition with an if and an else leg. If the condition is an unusual condition, I check the condition and return if it’s true. This kind of check is often called a guard clause.
 - The key point of Replace Nested Conditional with Guard Clauses is emphasis
+- If I’m using an if-then-else construct, I’m giving equal weight to the if leg and
+  the else leg. This communicates to the reader that the legs are equally likely and
+  important. Instead, the guard clause says, “This isn’t the core to this function,
+  and if it happens, do something and get out.”
 
 ##### 10.3.2 mechanics
 

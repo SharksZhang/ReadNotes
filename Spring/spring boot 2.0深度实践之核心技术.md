@@ -352,11 +352,197 @@
 
    #### Spring Boot Actuator
 
-   1. 断点：各类Web和JMX Endpoints
+   1. 端点：各类Web和JMX Endpoints
       1. Web Endpoints
-      2. JMX Dndpoints
+      2. JMX endpoints
    2. 健康检查:health、HealthIndicator
    3. 指标:内建Metrics、自定义Metrics
 
+   ## 2.走向自动装配
+
+### 2.1  Spring Framework手动装配
+
+#### 2.1.1 spring模式注解装配
+
+定义：一种用于生命在应用中扮演“组件”角色的注解
+
+模式注解是一种用于声明在应用中扮演“组件”角色的注解。如 Spring Framework 中的 @Repository 标注在任何类上 ，用于扮演仓储角色的模式注解。
+@Component 作为一种由 Spring 容器托管的通用模式组件，任何被 @Component 标准的组件均为组件扫描的候选对象。类似地，凡是被 @Component 元标注（meta-annotated）的注解，如 @Service ，当任何组件标注它时，也被视作组件扫描的候选对象
+
+举例：@Component、@Service、@Configuration
+
+装配：<context:Component-scan>或@ComponentScan
+
+##### 模式注解举例
+
+| Spring Framework 注解 |                  |      |
+| --------------------- | ---------------- | ---- |
+| @Repository           | 数据仓储模式注解 |      |
+| @Component            | 通用组件模式注解 |      |
+| @Service              | 服务模式注解     |      |
+| @Controller Web       | 控制器模式注解   |      |
+| @Configuration        | 配置类模式注解   |      |
+
+#####  模式注解的作用
+
+##### 注解装配方式
+
+1. <context:component-scan> 方式
+
+   ```xml
+   <?xml version="1.0" encoding="UTF-8"?>
+   <beans xmlns="http://www.springframework.org/schema/beans"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"@ComponentScan 方式
+   自定义模式注解
+   @Component “派生性”
+   @Component
+   @Repository
+   FirstLevelRepository
+   xmlns:context="http://www.springframework.org/schema/context"
+   xsi:schemaLocation="http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans.xsd
+   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/springcontext.xsd">
+   <!-- 激活注解驱动特性 -->
+   <context:annotation-config />
+   <!-- 找寻被 @Component 或者其派生 Annotation 标记的类（Class），将它们注册为 Spring Bean -->
+   <context:component-scan base-package="com.imooc.dive.in.spring.boot" />
+   </beans>
+   ```
+
+2. @ComponentScan 方式
+
+   ```java
+   @ComponentScan(basePackages = "com.imooc.dive.in.spring.boot")
+   public class SpringConfiguration {
+   ...
+   }
+   ```
+
+3. 使用模式注解的方法
+
+   1. ```
+      @FirstLevelRepository(value = "myFirstLevelRepository")
+      public class MyFirstLevelRepository {
+      }
+      ```
+
+   2. ```
+      @ServletComponentScan(basePackages = "com.ericzhang08.diveinspringboot.web.servlet")
+      public class DiveInSpringBootApplication {
+      ```
+
+
+
+##### 自定义注解
+
+1. @component 派生性
+
+   1. ```
+      /
+      **
+      * 一级 {@link Repository @Repository}
+      * *
+      @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
+      * @since 1.0.0
+      */
+      @Target({ElementType.TYPE})
+      @Retention(RetentionPolicy.RUNTIME)
+      @Documented
+      @Repository
+      public @interface FirstLevelRepository {
+      String value() default "";
+      }
+      ```
+
+      顶层注解和下层注解没有什么区别，相当于继承，但是java的注解编程规范中是没有继承的
+
+      被@Comonent注解的注解注解别的类，和@Component注解作用相同
+
+2. @Component 层次性
+
+   ```
+   @Target({ElementType.TYPE})
+   @Retention(RetentionPolicy.RUNTIME)
+   @Documented
+   @FirstLevelRepository
+   public @interface SecondLevelRepository {
+   String value() default "";
+   }
+   ```
+
+   被@Comonent注解的注解注解别的注解，注解别的类和Component直接注解作用相同ß
+
+### 2.2 Springboot @Enable模块装配
+
+​	定义：具备相同领域的功能组件集合，组合所形成的一个独立的单元.Spring Framework3.1开始支持 @""
+
+举例：@EnableWebMvc\@EnableAutoConfiguration等
+
+实现：注解方式，编程方式
+
+![Screen Shot 2020-04-14 at 10.38.38 PM](Screen%20Shot%202020-04-14%20at%2010.38.38%20PM.png)
+
+##### 实现方式
+
+1. 注解驱动方式
+
+   ```
+   @Retention(RetentionPolicy.RUNTIME)
+   @Target(ElementType.TYPE)
+   @Documented
+   @Import(DelegatingWebMvcConfiguration.class)
+   public @interface EnableWebMvc {
+   }
+   ```
+
+   ```
+   @Configuration
+   public class DelegatingWebMvcConfiguration extends
+   WebMvcConfigurationSupport {
+   ...
+   }
+   ```
+
    
 
+2. 接口编程方式
+
+   ```
+   @
+   Target(ElementType.TYPE)
+   @Retention(RetentionPolicy.RUNTIME)
+   @Documented
+   @Import(CachingConfigurationSelector.class)
+   public @interface EnableCaching {
+   ...
+   }
+   ```
+
+   ```
+   public class CachingConfigurationSelector extends AdviceModeImportSelector<EnableCaching> {
+   /**
+   * {@inheritDoc}
+   * @return {@link ProxyCachingConfiguration} or {@code
+   AspectJCacheConfiguration} for
+   * {@code PROXY} and {@code ASPECTJ} values of {@link
+   EnableCaching#mode()}, respectively
+   */
+   public String[] selectImports(AdviceMode adviceMode) {
+   switch (adviceMode) {
+   case PROXY:
+   return new String[] {
+   AutoProxyRegistrar.class.getName(),ProxyCachingConfiguration.class.getName() };
+   case ASPECTJ:
+   return new String[] {
+   AnnotationConfigUtils.CACHE_ASPECT_CONFIGURATION_CLASS_NAME };
+   default:
+   return null;
+   }
+   }
+   ```
+
+   
+
+### 2.2  Spring boot的自动装配
+
+### 2.3 总结
