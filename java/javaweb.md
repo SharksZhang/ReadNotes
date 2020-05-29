@@ -1,3 +1,5 @@
+[toc]
+
 ### javaWeb
 
 #### 1. Java web的概念
@@ -23,10 +25,6 @@ javaweb是基于请求和响应来开发的
 #### 3.常用的web服务器
 
 1. tomcat
-2. jboss
-3. GlassFish
-4. Resin
-5. Weblogic
 
 #### 4. tomcat的使用
 
@@ -117,4 +115,87 @@ work 是 Tomcat 工作时的目录， 用来存放 Tomcat 运行时 jsp 翻译�
 2.  实现 service 方法， 处理请求， 并响应数据
 3.  到 web.xml 中去配置 servlet 程序的访问地址
 
-#### servlet 与 springmvc的关系
+#### 3. url 到servlet的访问路径
+
+![Screen Shot 2020-05-29 at 1.59.34 PM](Screen%20Shot%202020-05-29%20at%201.59.34%20PM.png)
+
+#### 4. servlet的生命周期
+
+1、 执行 Servlet 构造器方法
+2、 执行 init 初始化方法
+第一、 二步， 是在第一次访问， 的时候创建 Servlet 程序会调用。
+3、 执行 service 方法
+第三步， 每次访问都会调用。
+4、 执行 destroy 销毁方法
+第四步， 在 web 工程停止的时候调用
+
+
+
+#### 5. servlet的请求分发处理
+
+​	都是用service处理
+
+#### 6.Servlet 类的继承体系
+
+![Screen Shot 2020-05-29 at 2.26.20 PM](Screen%20Shot%202020-05-29%20at%202.26.20%20PM.png)
+
+### ServletConfig类
+
+ServletConfig 类从类名上来看， 就知道是 Servlet 程序的配置信息类。
+Servlet 程序和 ServletConfig 对象都是由 Tomcat 负责创建， 我们负责使用。
+Servlet 程序默认是第一次访问的时候创建， ServletConfig 是每个 Servlet 程序创建时， 就创建一个对应的 ServletConfig 对
+象。
+
+#### 1. ServletConfig 类的三大作用
+
+1、 可以获取 Servlet 程序的别名 servlet-name 的值
+2、 获取初始化参数 init-param
+3、 获取 ServletContext 对象
+
+
+
+### ServletContext 类
+
+##### 1.什么是 ServletContext?
+
+1、 ServletContext 是一个接口， 它表示 Servlet 上下文对象
+2、 一个 web 工程， 只有一个 ServletContext 对象实例。
+3、 ServletContext 对象是一个域对象。
+4、 ServletContext 是在 web 工程部署启动的时候创建。 在 web 工程停止的时候销毁。
+
+
+
+### HttpServletRequest 类
+
+##### 1.HttpServletRequest 类有什么作用
+
+每次只要有请求进入 Tomcat 服务器， Tomcat 服务器就会把请求过来的 HTTP 协议信息解析好封装到 Request 对象中。
+然后传递到 service 方法（ doGet 和 doPost） 中给我们使用。 我们可以通过 HttpServletRequest 对象， 获取到所有请求的
+信息。
+
+##### 2. HttpServletRequest 类的常用方法
+
+i. getRequestURI() 获取请求的资源路径
+ii. getRequestURL() 获取请求的统一资源定位符（绝对路径）
+iii. getRemoteHost() 获取客户端的 ip 地址
+iv. getHeader() 获取请求头
+v. getParameter() 获取请求的参数
+vi. getParameterValues() 获取请求的参数（多个值的时候使用）
+vii. getMethod() 获取请求的方式 GET 或 POST
+viii. setAttribute(key, value); 设置域数据
+ix. getAttribute(key); 获取域数据
+x. getRequestDispatcher() 获取请求转发对象
+
+
+
+##### 3. 如何获取请求参数
+
+##### 4. 请求的转发
+
+什么是请求的转发?
+请求转发是指， 服务器收到请求后， 从一次资源跳转到另一个资源的操作叫请求转发。
+
+
+
+
+
