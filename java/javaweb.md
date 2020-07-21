@@ -197,5 +197,223 @@ x. getRequestDispatcher() 获取请求转发对象
 
 
 
+### HttpServletResponse
 
+#### HttpServletResponse 类的作用
+
+HttpServletResponse 类和 HttpServletRequest 类一样。 每次请求进来， Tomcat 服务器都会创建一Response 对象传递给 Servlet 程序去使用。 HttpServletRequest 表示请求过来的信息， HttpServletResponse 表示所有响应的信息，我们如果需要设置返回给客户端的信息， 都可以通过 HttpServletResponse 对象来进行设置
+
+#### 两个输出流
+
+```
+字节流 getOutputStream(); 常用于下载（传递二进制数据）
+字符流 getWriter(); 常用于回传字符串（常用）
+```
+
+两个流同时只能使用一个。
+使用了字节流， 就不能再使用字符流， 反之亦然， 否则就会报错。
+
+#### 如何往客户端回传数据
+
+```
+public class ResponseIOServlet extends HttpServlet {
+@Override
+protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
+IOException {
+// 要求 ： 往客户端回传 字符串 数据。
+PrintWriter writer = resp.getWriter();
+writer.write("response's content!!!");
+}
+}
+```
+
+#### 响应的乱码解决
+
+```
+resp.setContentType("text/html; charset=UTF-8");
+```
+
+
+
+#### 请求重定向
+
+请求重定向， 是指客户端给服务器发请求， 然后服务器告诉客户端说。 我给你一些地址。 你去新地址访问。 叫请求重定向（因为之前的地址可能已经被废弃） 。
+
+![Screen Shot 2020-06-05 at 1.09.43 PM](Screen%20Shot%202020-06-05%20at%201.09.43%20PM.png)
+
+```
+resp.sendRedirect("http://localhost:8080");
+```
+
+### Cookie
+
+#### 什么是 Cookie?
+
+1.  Cookie 是服务器通知客户端保存键值对的一种技术。
+2.  客户端有了 Cookie 后， 每次请求都发送给服务器。
+3.  每个 Cookie 的大小不能超过 4kb
+
+#### 如何创建 Cookie
+
+#### 如何获取cookie
+
+```
+        Cookie cookie = new Cookie("key1", "value1");
+        Cookie cookie2 = new Cookie("key2", "value2");
+        resp.addCookie(cookie);
+        resp.addCookie(cookie2);
+
+        resp.getWriter().write("success");
+
+        for (Cookie reqCookie : req.getCookies()) {
+            System.out.println("name:" + reqCookie.getName());
+            System.out.println("value:" + reqCookie.getValue());
+            System.out.println("domain" + reqCookie.getDomain());
+            System.out.println("path" + reqCookie.getPath());
+
+        }
+
+```
+
+#### cookie的属性
+
+- name
+   代表cookie的名字一个域名下绑定的cookie，name不能相同，相同的name的值会被覆盖掉。
+- value
+   表示cookie的值，值得注意的是用 JavaScript 操作 Cookie 的时候注意对 value 进行编码处理。
+
+> 由于cookie规定是名称/值是不允许包含分号，逗号，空格的，所以为了不给用户到来麻烦，考虑服务器的兼容性，任何存储cookie的数据都应该被编码.
+
+- domain
+   这个是指的域名，这个代表的是，cookie绑定的域名，如果没有设置，就会自动绑定到执行语句的当前域.
+- path
+   path 指定了一个 URL 路径，这个路径必须出现在要请求的资源的路径中才可以发送 Cookie 首部。path这个属性默认是'/'，这个值匹配的是web的路由，举个例子：比如设置 Path=/blog，其实它会给/blog、/blogabc等等的都会带 Cookie 首部。/test 则不会携带 Cookie 。
+
+
+
+```cpp
+//默认路径
+www.test.com
+//blog路径携带Cookie
+www.test.com/blog
+//不携带
+www.test.com/test
+```
+
+- expires
+   expires 用于设置 Cookie 的过期时间。一般浏览器的Cookie都是默认储存的，当关闭浏览器结束这个会话的时候，这个cookie也就会被删除是**会话性 Cookie**，其值保存在客户端内存中。与会话性 Cookie 相对的是**持久性 Cookie**，持久性 Cookies 会保存在用户的硬盘中，直至过期或者清除 Cookie。而设定的日期和时间只与客户端相关，非服务端。
+   举例来说：如果你想要cookie存在一段时间，那么你可以通过设置expires属性为未来的一个时间节点，expires代表当前时间。
+
+- Max-Age
+   Max-Age 用于设置在 Cookie 失效之前需要经过的秒数。比如：
+
+  
+
+  ```dart
+  Set-Cookie: id=a3fWa; Max-Age=604800;
+  ```
+
+  Max-Age 可以为正数、负数、甚至是 0。
+   如果 max-Age 属性为正数时，浏览器会将其持久化，即写到对应的 Cookie 文件中。
+
+1. 当 max-Age 属性为负数，则表示该 Cookie 只是一个会话性 Cookie。
+2. 当 max-Age 为 0 时，则会立即删除这个 Cookie。
+3. 当 expires 和 Max-Age 都存在，Max-Age 优先级更高。
+    **不能跨域设置 Cookie**，例如：在test的域名下设置
+
+
+
+```dart
+Set-Cookie: qwerty=219ffwef9w0f; security; Domain=baidu.com; Path=/; Expires=Wed, 30 Aug 2020 00:00:00 GMT
+```
+
+是无效的，因为domain 和path共同定义了 Cookie 的作用域。
+
+### Session
+
+#### 什么是 Session 会话?
+
+1、 Session 就一个接口（HttpSession） 。
+2、 Session 就是会话。 它是用来维护一个客户端和服务器之间关联的一种技术。
+3、 每个客户端都有自己的一个 Session 会话。
+4、 Session 会话中， 我们经常用来保存用户登录之后的信息。
+
+#### 如何创建 Session 和获取(id 号,是否为新)
+
+equest.getSession()
+第一次调用是： 创建 Session 会话
+之后调用都是： 获取前面创建好的 Session 会话对象。
+isNew(); 判断到底是不是刚创建出来的（新的）
+true 表示刚创建
+false 表示获取之前创建
+每个会话都有一个身份证号。 也就是 ID 值。 而且这个 ID 是唯一的。
+getId() 得到 Session 的会话 id 值。
+
+
+
+#### Session 生命周期控制
+
+public void setMaxInactiveInterval(int interval) 设置 Session 的超时时间（ 以秒为单位） ， 超过指定的时长， Session就会被销毁。
+值为正数的时候， 设定 Session 的超时时长。
+负数表示永不超时（极少使用）
+public int getMaxInactiveInterval()获取 Session 的超时时间
+public void invalidate() 让当前 Session 会话马上超时无效
+
+
+
+**Session 默认的超时时间长为 30 分钟**
+
+#### 浏览器和 Session 之间关联的技术内幕
+
+![Screen Shot 2020-06-05 at 1.57.19 PM](Screen%20Shot%202020-06-05%20at%201.57.19%20PM.png)
+
+
+
+### Filter 
+
+#### 什么是过滤器
+
+1. Filter 过滤器它是 JavaWeb 的三大组件之一。 三大组件分别是： Servlet 程序、 Listener 监听器、 Filter 过滤器
+2.  Filter 过滤器它是 JavaEE 的规范。 也就是接口
+3.  Filter 过滤器它的作用是： 拦截请求， 过滤响应
+
+#### 如何使用过滤器
+
+filter 过滤器的使用步骤：
+1、 编写一个类去实现 Filter 接口
+2、 实现过滤方法 doFilter()
+3、 到 web.xml 中去配置 Filter 的拦截路径
+
+```
+    <filter>
+        <!--给 filter 起一个别名-->
+        <filter-name>TestFilter</filter-name>
+        <!--配置 filter 的全类名-->
+        <filter-class>com.ericzhang08.filter.TestFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>TestFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+```
+
+
+
+#### Filter 的生命周期
+
+Filter 的生命周期包含几个方法
+1、 构造器方法
+2、 init 初始化方法
+第 1， 2 步， 在 web 工程启动的时候执行（Filter 已经创建）
+3、 doFilter 过滤方法
+第 3 步， 每次拦截到请求， 就会执行
+4、 destroy 销毁
+第 4 步， 停止 web 工程的时候， 就会执行（停止 web 工程， 也会销毁 Filter 过滤器）
+
+
+
+#### FilterChain 过滤器链
+
+![Screen Shot 2020-06-05 at 2.11.21 PM](Screen%20Shot%202020-06-05%20at%202.11.21%20PM.png)
 

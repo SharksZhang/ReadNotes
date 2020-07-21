@@ -1,3 +1,7 @@
+[TOC]
+
+
+
 ##本单元目标
 	一、为什么要学习数据库
 	二、数据库的相关概念      
@@ -312,25 +316,25 @@ order by 排序的字段|表达式|函数|别名 【asc|desc】
 ​		length 获取字节个数
 ​		SELECT LENGTH('JOHN')
 ​		
-	2、数学函数
-		round 四舍五入
-		rand 随机数
-		floor向下取整
-		ceil向上取整
-		mod取余
-		truncate()截断
-		SELECT  TRUNCATE(1.699999, 1);
-	3、日期函数
-		1.now当前系统日期+时间
-		SELECT NOW();
-		2.curdate当前系统日期
-		SELECT  CURDATE();
-		3.curtime当前系统时间
-		SELECT CURTIME();
-		4.取出指定部分
-	  SELECT YEAR(NOW()) year;
-	  SELECT year('1998-1-1');
-	  
+​	2、数学函数
+​		round 四舍五入
+​		rand 随机数
+​		floor向下取整
+​		ceil向上取整
+​		mod取余
+​		truncate()截断
+​		SELECT  TRUNCATE(1.699999, 1);
+​	3、日期函数
+​		1.now当前系统日期+时间
+​		SELECT NOW();
+​		2.curdate当前系统日期
+​		SELECT  CURDATE();
+​		3.curtime当前系统时间
+​		SELECT CURTIME();
+​		4.取出指定部分
+​	  SELECT YEAR(NOW()) year;
+​	  SELECT year('1998-1-1');
+​	  
 	 5.datediff 求日期只差
 	
 	  SELECT MONTH('1998-1-1');
@@ -412,10 +416,10 @@ SELECT first_name, SUBSTR(first_name, 1, 1), length(first_name) FROM employees O
 ​	
 ​	1.SELECT SUM(salary), AVG(salary), COUNT(salary), department_id  FROM employees GROUP BY department_id;
 ​	
-	2.按照表达式分组
-	SELECT COUNT(*), LENGTH(last_name) FROM employees group by LENGTH(last_name);
-	3.按照多个字段分组
-	SELECT AVG(salary), department_id, job_id FROM employees GROUP BY department_id, job_id;
+​	2.按照表达式分组
+​	SELECT COUNT(*), LENGTH(last_name) FROM employees group by LENGTH(last_name);
+​	3.按照多个字段分组
+​	SELECT AVG(salary), department_id, job_id FROM employees GROUP BY department_id, job_id;
 
 
 ​	
@@ -826,8 +830,9 @@ CREATE TABLE clpy4 SELECT id, au_name FROM author WHERE 1=2;
 		Enum： c1 ENUM('a','b', 'c')
 		Set : s1 SET('a', 'b', 'c', 'd')
 		binary 和varbinary用以保存较短的二进制
-		
-		
+
+
+​		
 	日期型：
 	Date
 	datetime：和时区有关
@@ -840,7 +845,7 @@ CREATE TABLE clpy4 SELECT id, au_name FROM author WHERE 1=2;
 
 ###常见约束
 
-	
+
 	一种限制，由于限制表中的数据，为了保证表中的数据的准确性和可靠性
 	CREATE TABLE 表名（
 		字段名 字段类型 约束
@@ -882,7 +887,7 @@ CREATE TABLE clpy4 SELECT id, au_name FROM author WHERE 1=2;
 	
 	CREATE TABLE tab_identity(
 	id INT PRIMARY KEY AUTO_INCREMENT)
-		
+
 
 ##数据库事务
 ###含义
@@ -1013,11 +1018,11 @@ CREATE TABLE clpy4 SELECT id, au_name FROM author WHERE 1=2;
 ​	SELECT last_name FROM employees
 ​	WHERE employee_id>100;
 ​	
-	#方式二:
-	ALTER VIEW test_v7
-	AS
-	SELECT employee_id FROM employees;
-	
+​	#方式二:
+​	ALTER VIEW test_v7
+​	AS
+​	SELECT employee_id FROM employees;
+​	
 	SELECT * FROM test_v7;
 ###视图的删除
 	DROP VIEW test_v1,test_v2,test_v3;
