@@ -373,17 +373,12 @@ IOC的另一种表述方式：即组件以一些预先定义好的方式(例如�
 声明通过静态方法创建的bean需要在bean的class属性里指定静态工厂类的全类名，同时在factory-method属性里指定工厂方法的名称。最后使用<constrctor-arg>元素为该方法传递方法参数。
 
 ```
-    <bean id="static_person" class="com.ericzhang08.helloworld.StaticPersonFactory" factory-method="createPerson">
+    <bean id="static_person" class="com.ericzhang08.helloworld.PersonStaticFactory" factory-method="createPerson">
         <constructor-arg name="name" value="staticFactoryPerson"/>
     </bean>
-    
 ```
 
-```
-    <bean id="instance_person" class="com.ericzhang08.helloworld.PersonStaticFactory" factory-bean="instance_person_factory" factory-method="createPerson">
-        <constructor-arg name="name" value="instanceFactoryPerson"/>
-    </bean>
-```
+
 
 
 
@@ -397,6 +392,12 @@ public class PersonInstanceFactory {
         return new Person(name, 2, "", "");
     }
 }
+
+    <bean id="instance_person_factory" class="com.ericzhang08.helloworld.PersonInstanceFactory"/>
+
+    <bean id="instance_person" class="com.ericzhang08.helloworld.PersonInstanceFactory" factory-bean="instance_person_factory" factory-method="createPerson">
+        <constructor-arg name="name" value="instanceFactoryPerson"/>
+    </bean>
 ```
 
 
@@ -496,3 +497,126 @@ Spring允许继承bean的配置，被继承的bean称为父bean。继承这个�
 
 
 
+#### 2  bean的生命周期
+
+①Spring IOC容器可以管理bean的生命周期，Spring允许在bean生命周期内特定的时间点执行指定的任务。
+
+②Spring IOC容器对bean的生命周期进行管理的过程：
+		②Spring IOC容器对bean的生命周期进行管理的过程：
+
+    1. 通过构造器或工厂方法创建bean实例
+    2. 为bean的属性设置值和对其他bean的引用
+    3. 调用bean的初始化方法
+    4. bean可以使用了
+  5. 当容器关闭时，调用bean的销毁方法
+
+③在配置bean时，通过init-method和destroy-method 属性为bean指定初始化和销毁方法
+
+④bean的后置处理器
+
+1. bean后置处理器允许在调用**初始化方法前后**对bean进行额外的处理
+
+2. bean后置处理器对IOC容器里的所有bean实例逐一处理，而非单一实例。其典型应用是：检查bean属性的正确性或根据特定的标准更改bean的属性。
+
+3. bean后置处理器时需要实现接口：org.springframework.beans.factory.config.BeanPostProcessor。在初始化方法被调用前后，Spring将把每个bean实例分别传递给上述接口的以下两个方法
+
+-   postProcessBeforeInitialization(Object, String)
+-    postProcessAfterInitialization(Object, String)
+
+​     
+
+ ⑤添加bean后置处理器后bean的生命周期
+
+    1. 通过构造器或工厂方法**创建****bean****实例**
+    2. 为bean的**属性设置值**和对其他bean的引用
+    3. 将bean实例传递给bean后置处理器的**postProcessBeforeInitialization()**方法
+    4. 调用bean的**初始化**方法
+    5. 将bean实例传递给bean后置处理器的**postProcessAfterInitialization()**方法
+    6. bean可以使用了
+  7. 当容器关闭时调用bean的**销毁方法**
+
+
+
+#### 3  bean的作用域
+
+在Spring中，可以在<bean>元素的scope属性里设置bean的作用域，以决定这个bean是单实例的还是多实例的。
+
+默认情况下，Spring只为每个在IOC容器里声明的bean创建唯一一个实例，整个IOC容器范围内都能共享该实例：所有后续的getBean()调用和bean引用都将返回这个唯一的bean实例。该作用域被称为singleton，它是所有bean的默认作用域。
+
+![image-20200922222850990](image-20200922222850990.png)
+
+#### 自动装配
+
+##### 自动装配的概念
+
+1. 手动装配：以value或ref的方式**明确指定属性值**都是手动装配
+2. 自动装配：根据指定的装配规则，**不需要明确指定**，Spring**自动**将匹配的属性值**注入**bean中。
+
+##### 装配模式
+
+1. 根据**类型**自动装配：将类型匹配的bean作为属性注入到另一个bean中。若IOC容器中有多个与目标bean类型一致的bean，Spring将无法判定哪个bean最合适该属性，所以不能执行自动装配
+2. 根据**名称**自动装配：必须将目标bean的名称和属性名设置的完全相同
+3. 通过构造器自动装配：当bean中存在多个构造器时，此种自动装配方式将会很复杂。不推荐使用。
+
+##### 基于xml进行自动装配
+
+Autowired 有四个值
+
+1. default 默认值，不自动装配
+
+2. byName
+
+   按照名字，以属性名作为id去容器中找到这个组件，给他赋值，如果找不到就装配null。
+
+   ```
+       <bean id="car" class="com.ericzhang08.helloworld.Car">
+           <property name="name" value="car"/>
+       </bean>
+   
+       <bean id="person" class="com.ericzhang08.helloworld.Person" autowire="byName">
+       </bean>
+   ```
+
+   
+
+3. byType
+
+   以属性的类型作为id去容器中找到这个组件，给他赋值。
+
+   ```
+   <bean  class="com.ericzhang08.helloworld.Car">
+       <property name="name" value="car"/>
+   </bean>
+   
+   <bean id="person" class="com.ericzhang08.helloworld.Person" autowire="byType">
+   </bean>
+   ```
+
+4. Constructor 按照构造器进行赋值
+
+   1. 先按照有参构造器参数类型进行装配，没有就直接为组件装配null
+
+   2. 如果找到多个， 使用参数的名称为id进行装配，找不到就装配null
+
+      ```
+          <bean  class="com.ericzhang08.helloworld.Car">
+              <property name="name" value="car"/>
+          </bean>
+      
+          <bean id="person" class="com.ericzhang08.helloworld.Person" autowire="constructor">
+          </bean>
+      ```
+
+      
+
+
+
+
+
+
+
+
+
+## 问题记录
+
+1. 构造器注入和属性注入的优劣，为什么推荐使用构造器注入
