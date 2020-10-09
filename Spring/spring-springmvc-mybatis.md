@@ -231,7 +231,7 @@ IOC的另一种表述方式：即组件以一些预先定义好的方式(例如�
       <bean id="book" class="com.atguigu.spring.bean.Book" >
             <constructor-arg value= "10010" index ="0" type="java.lang.Integer" />
             <constructor-arg value= "Book01" index ="1" type="java.lang.String" />
-            <constructor-arg value= "Author01" index ="2" type="java.lang.String" />
+            <constructor-arg value= "Author01" index ="2" type="java.lang.String"/>
             <constructor-arg value= "20.2" index ="3" type="java.lang.Double" />
       </bean >
       
@@ -613,10 +613,393 @@ Autowired 有四个值
 
 
 
+#### 通过注解配置bean
+
+##### 概述
+
+相对于XML方式而言，通过注解的方式配置bean更加简洁和优雅，而且和MVC组件化开发的理念十分契合，是开发中常用的使用方式。
+
+##### 基于注解添加bean
+
+1.1    使用注解标识组件
+
+①普通组件：@Component
+
+标识一个受Spring IOC容器管理的组件
+
+②持久化层组件：@Respository
+
+标识一个受Spring IOC容器管理的持久化层组件
+
+③业务逻辑层组件：@Service
+
+标识一个受Spring IOC容器管理的业务逻辑层组件
+
+④表述层控制器组件：@Controller
+
+标识一个受Spring IOC容器管理的表述层控制器组件
+
+⑤组件命名规则
+
+[1]默认情况：使用组件的简单类名首字母小写后得到的字符串作为bean的id,默认生命周期为单实例，
+
+可以使用 @Scope(value = "prototype")注解改变其生命周期
+
+```
+@Repository
+@Scope(value = "prototype")
+public class UserRepository {
+}
+```
+
+[2]使用组件注解的value属性指定bean的id
 
 
 
+##### 扫描组件
+
+组件被上述注解标识后还需要通过Spring进行扫描才能够侦测到。
+
+①指定被扫描的package
+
+```
+    <context:component-scan base-package="com.ericzhang08.helloworld"/>
+
+```
+
+ 
+
+②详细说明
+
+[1]**base-package**属性指定一个需要扫描的基类包，Spring容器将会扫描这个基类包及其子包中的所有类。
+
+[2]当需要扫描多个包时可以使用逗号分隔。
+
+[3]如果仅希望扫描特定的类而非基包下的所有类，可使用resource-pattern属性过滤特定的类，示例：
+
+```
+  <context:component-scan      base-package="com.atguigu.component"      resource-pattern=*"autowire/\*.class"*/>  
+```
+
+ 
+
+[4]包含与排除
+
+●<context:include-filter>子节点表示要包含的目标类
+
+注意：通常需要与use-default-filters属性配合使用才能够达到“仅包含某些组件”这样的效果。即：通过将use-default-filters属性设置为false，禁用默认过滤器，然后扫描的就只是include-filter中的规则指定的组件了。
+
+```
+    <context:component-scan base-package="com.ericzhang08.helloworld" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+
+    </context:component-scan>
+    
+```
+
+●<context:exclude-filter>子节点表示要排除在外的目标类
+
+​	
+
+```
+    <context:component-scan base-package="com.ericzhang08.helloworld">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+        
+    </context:component-scan>
+```
+
+●component-scan下可以拥有若干个include-filter和exclude-filter子节点
+
+●过滤表达式
+
+| 类别       | 示例                      | 说明                                                         |
+| ---------- | ------------------------- | ------------------------------------------------------------ |
+| annotation | com.atguigu.XxxAnnotation | 过滤所有标注了XxxAnnotation的类。这个规则根据目标组件是否标注了指定类型的注解进行过滤。 |
+| assignable | com.atguigu.BaseXxx       | 过滤所有BaseXxx类的子类。这个规则根据目标组件是否是指定类型的子类的方式进行过滤。 |
+| aspectj    | com.atguigu.*Service+     | 所有类名是以Service结束的，或这样的类的子类。这个规则根据AspectJ表达式进行过滤。 |
+| regex      | com\.atguigu\.anno\.*     | 所有com.atguigu.anno包下的类。这个规则根据正则表达式匹配到的类名进行过滤。 |
+| custom     | com.atguigu.XxxTypeFilter | 使用XxxTypeFilter类通过编码的方式自定义过滤规则。该类必须实现org.springframework.core.type.filter.TypeFilter接口 |
+
+#####   组件装配
+
+①需求
+
+Controller组件中往往需要用到Service组件的实例，Service组件中往往需要用到Repository组件的实例。Spring可以通过注解的方式帮我们实现属性的装配。
+
+ ②实现依据
+
+在指定要扫描的包时，<context:component-scan> 元素会自动注册一个bean的后置处理器：AutowiredAnnotationBeanPostProcessor的实例。该后置处理器可以自动装配标记了**@Autowired**、@Resource或@Inject注解的属性。
+
+ ③@Autowired注解
+
+[1]根据类型实现自动装配。
+
+[2]构造器、普通字段(即使是非public)、一切具有参数的方法都可以应用@Autowired注解
+
+[3]默认情况下**，所有使用@Autowired注解的属性都需要被设置。当Spring找不到匹配的bean装配属性时，会抛出异常。**
+
+[4]若某一属性允许不被设置，可以设置@Autowired注解的required属性为 false
+
+[5]默认情况下，当IOC容器里存在多个类型兼容的bean时，Spring会尝试匹配bean的id值是否与变量名相同，如果相同则进行装配。如果bean的id值不相同，通过类型的自动装配将无法工作。此时可以在**@Qualifier注解里提供bean的名称**。Spring甚至允许在方法的形参上标注@Qualifiter注解以指定注入bean的名称。
+
+[6]@Autowired注解也可以应用在数组类型的属性上，此时Spring将会把所有匹配的bean进行自动装配。
+
+[7]@Autowired注解也可以应用在集合属性上，此时Spring读取该集合的类型信息，然后自动装配所有与之兼容的bean。
+
+[8]@Autowired注解用在java.util.Map上时，若该Map的键值为String，那么 Spring将自动装配与值类型兼容的bean作为值，并以bean的id值作为键。
+
+​            ④@Resource
+
+@Resource注解要求提供一个bean名称的属性，若该属性为空，则自动采用标注处的变量或方法名作为bean的名称。 J2ee：java的标准
+
+⑤@Inject
+
+@Inject和@Autowired注解一样也是按类型注入匹配的bean，但没有reqired属性。
+
+
+
+使用元注解时不用autowired也会自动装配
+
+
+
+注解方式声明 xml文件注入bean
+
+```
+@ContextConfiguration(locations = "classpath:ioc.xml")
+```
+
+## aop
+
+#### 
+
+##### 什么是aop
+
+①要在Spring中声明AspectJ切面，只需要在IOC容器中将切面声明为bean实例。
+
+②当在Spring IOC容器中初始化AspectJ切面之后，Spring IOC容器就会为那些与 AspectJ切面相匹配的bean创建代理。
+
+③在AspectJ注解中，切面只是一个带有@Aspect注解的Java类，它往往要包含很多通知。
+
+④通知是标注有某种注解的简单的Java方法。
+
+⑤AspectJ支持5种类型的通知注解：
+
+[1]@Before：前置通知，在方法执行之前执行
+
+[2]@After：后置通知，在方法执行之后执行
+
+[3]@AfterRunning：返回通知，在方法返回结果之后执行
+
+[4]@AfterThrowing：异常通知，在方法抛出异常之后执行
+
+[5]@Around：环绕通知，围绕着方法执行
+
+#####   AOP术语
+
+切面(Aspect)：封装横切关注点信息的类，每个关注点体现为一个通知方法。
+
+通知(Advice) ：切面必须要完成的各个具体工作
+
+目标(Target)：被通知的对象
+
+代理(Proxy)：向目标对象应用通知之后创建的代理对象
+
+连接点(Joinpoint)
+
+横切关注点在程序代码中的具体体现，对应程序执行的某个特定位置。例如：类某个方法调用前、调用后、方法捕获到异常后等。
+
+切入点(pointcut)：
+
+定位连接点的方式。每个类的方法中都包含多个连接点，所以连接点是类中客观存在的事物。如果把连接点看作数据库中的记录，那么切入点就是查询条件——AOP可以通过切入点定位到特定的连接点。切点通过org.springframework.aop.Pointcut 接口进行描述，它使用类和方法作为连接点的查询条件。众多连接点中感兴趣的点。使用切入点表达式
+
+##### 如何定义切面类和目标类
+
+1. 在springboot中导入依赖
+
+   ```
+   		<dependency>
+   			<groupId>org.springframework.boot</groupId>
+   			<artifactId>spring-boot-starter-aop</artifactId>
+   		</dependency>
+   ```
+
+2. 使用注解 `@Aspect`标注切面类
+
+   ```
+   package com.ericzhang08.helloworld.aoptest;
+   
+   import org.aspectj.lang.annotation.Aspect;
+   import org.springframework.stereotype.Component;
+   
+   @Component
+   @Aspect
+   public class LogUtil {
+       public static void logStart() {
+           System.out.println("method  start");
+       }
+   
+       public static void logReturn() {
+           System.out.println("method return");
+       }
+   
+       public static void logException() {
+           System.out.println("throw exception, exception is...");
+       }
+   
+       public static void logEnd() {
+           System.out.println("method end");
+       }
+   }
+   ```
+
+##### 通知类型
+
+- @Before：前置通知，在方法执行之前执行
+
+- @After：后置通知，在方法执行之后执行
+
+- @AfterRunning：返回通知，在方法返回结果之后执行
+
+- @AfterThrowing：异常通知，在方法抛出异常之后执行
+
+- @Around：环绕通知，围绕着方法执行
+
+  
+
+  
+
+##### 切入点表达式
+
+1. 语法格式：
+
+  execution([权限修饰符] [返回值类型] [简单类名/全类名] [方法名]([参数列表]))  
+
+2. `*` 和`.`符号
+
+   `*`号可以代表任意修饰符及任意返回值
+
+   `..`匹配任意数量、任意类型的参数
+
+   
+
+   ```
+   execution(* com.spring.ArithmeticCalculator.*(..))
+   第一个“*”代表任意修饰符及任意返回值。
+   第二个“*”代表任意方法。
+   “..”匹配任意数量、任意类型的参数。
+   若目标类、接口与该切面类在同一个包中可以省略包名。
+   
+   ```
+
+3. 在AspectJ中，切入点表达式可以通过 “&&”、“||”、“!”等操作符结合起来。
+
+   ```
+   execution (* *.add(int,..)) || execution(* *.sub(int,..))
+   任意类中第一个参数为int类型的add方法或sub方法
+   ```
+
+   ```
+   public class LogUtil {
+       @Before("execution(public  int com.ericzhang08.helloworld.aoptest.Calculator.*(int, int))")
+       public static void logStart() {
+           System.out.println("method  start");
+       }
+   
+       @AfterReturning("execution(public  int com.ericzhang08.helloworld.aoptest.Calculator.*(int, int))")
+       public static void logReturn() {
+           System.out.println("method return");
+       }
+   
+       @AfterThrowing("execution(public  int com.ericzhang08.helloworld.aoptest.Calculator.*(int, int))")
+       public static void logException() {
+           System.out.println("throw exception, exception is...");
+       }
+   
+       @After("execution(public  int com.ericzhang08.helloworld.aoptest.Calculator.*(int, int))")
+       public static void logEnd() {
+           System.out.println("method end");
+       }
+   }
+   ```
+
+   
+
+
+
+1. 通知方法执行顺序
+
+2. 通知方法运行时获取详细信息
+
+   1. 通知方法的参数列表传入JoinPion参数
+   2. JoinPoint中封装了对应的参数
+   3. 注解中的returning可以指定使用哪个参数接受返回值
+   4. Throwing 来接受异常，可以使用异常类来限定接受哪种异常
+
+3. 重用切入点定义
+
+    在AspectJ切面中，可以通过@Pointcut注解将一个切入点声明成简单的方法。切入点的方法体通常是空的，因为将切入点定义与应用程序逻辑混在一起是不合理的。
+
+4. 环绕通知
+
+   1. @Around 
+
+      1. l 环绕通知是所有通知类型中功能最为强大的，能够全面地控制连接点，甚至可以控制是否执行连接点。
+
+         l 对于环绕通知来说，连接点的参数类型必须是ProceedingJoinPoint。它是 JoinPoint的子接口，允许控制何时执行，是否执行连接点。
+
+         l 在环绕通知中需要明确调用ProceedingJoinPoint的proceed()方法来执行被代理的方法。如果忘记这样做就会导致通知被执行了，但目标方法没有被执行。
+
+         注意：环绕通知的方法需要返回目标方法执行之后的结果，即调用 joinPoint.proceed();的返回值，否则会出现空指针异常
+
+   2. 环绕通知的执行顺序
+
+      1. 环绕通知优先于普通通知的执行顺序
+
+5. 多切面的运行顺序
+
+切入点：
+
+1. 如果目标类实现了接口，则使用的是java原生的代理， 如果未实现接口，则使用cglib实现aop
+
+  execution([权限修饰符] [返回值类型] [简单类名/全类名] [方法名]([参数列表]))  
+
+第一个“*”代表任意修饰符及任意返回值。
+
+第二个“*”代表任意方法。
+
+“..”匹配任意数量、任意类型的参数。
+
+2. 切入点表达式的写法 ：1》使用*匹配字符  2.使用 * 匹配任意参数 3 .. 匹配所有参数个数的方法 ..匹配任意层级的路径
+
+3. 在AspectJ中，切入点表达式可以通过 “&&”、“||”、“!”等操作符结合起来。
+
+```
+execution (* *.add(int,..)) || execution(* *.sub(int,..))
+```
+
+##### 通知方法 的执行顺序
+
+```
+try{
+
+@Before
+method.invode()
+@AfterReturning
+}catch(){
+afterThrowing
+}finally{
+@after
+}
+```
+
+正常执行 @Before   => after => afterReturning
+
+异常执行 before  => after  => afterThrowing
 
 ## 问题记录
 
 1. 构造器注入和属性注入的优劣，为什么推荐使用构造器注入
+2. ioc的源码是怎么实现的
+3. @springboottest注解做了哪些事情
+4. 如何获取springboot 的ioc container
+

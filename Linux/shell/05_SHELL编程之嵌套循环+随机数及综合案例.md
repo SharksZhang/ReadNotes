@@ -565,7 +565,7 @@ done
 echo sum=$sum
 ```
 
-##4. 补充扩展expect
+## 5. 补充扩展expect
 
 expect 自动应答  tcl语言
 
