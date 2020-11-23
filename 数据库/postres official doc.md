@@ -136,8 +136,62 @@ createdb // use default user name as db name
 
 1. Running the PostgreSQL interactive terminal program, called psql, which allows you to
    interactively enter, edit, and execute SQL commands
+
+   ```
+   psql mydb
+   ```
+
+   
+
 2. Using an existing graphical frontend tool like pgAdmin or an office suite with ODBC or JDBC
    support to create and manipulate a database. 
+
 3. Writing a custom application, using one of the several available language bindings. These
    possibilities are discussed further in Part IV
+
+#### The SQL Language
+
+1. The \i command reads in commands from the specified file
+2. Two dashes (“--”) introduce comments
+3. PostgreSQL supports the standard SQL types int, smallint, real, double precision,
+   char(N), varchar(N), date, time, timestamp, and interval,  as well as other types of
+   general utility and a rich set of geometric types. 
+4. Constants that are not simple numeric valuesusually must be surrounded by single quotes (')
+5. It is important to understand the interaction between aggregates and SQL's WHERE and HAVING
+   clauses
+   - WHERE selects input rows before groups and aggregates are computed (thus, it controls which rows go into the aggregatecomputation), 
+   - whereas HAVING selects group rows after groups and aggregates are computed
+   - Thus,the WHERE clause must not contain aggregate functions; 
+
+
+
+#### Advanced Features
+
+##### Views
+
+ou do not want to type the query each time
+you need it. You can create a view over the query, which gives a name to the query that you can refer
+to like an ordinary table:
+
+##### Foreign Keys
+
+Transactions are a fundamental concept of all database systems. The essential point of a transaction is
+that it bundles multiple steps into a single, all-or-nothing operation. 
+
+The intermediate states between
+the steps are not visible to other concurrent transactions, and if some failure occurs that prevents the
+transaction from completing, then none of the steps affect the database at all
+
+##### transaction
+
+- We need a guarantee that if something goes wrong partway through the operation, none of the steps executed so far will take effect. Grouping the updates into a transaction gives us this guarantee.
+- We also want a guarantee that once a transaction is completed and acknowledged by the database
+  system, it has indeed been permanently recorded and won't be lost even if a crash ensues shortly
+  thereafter.
+- PostgreSQL actually treats every SQL statement as being executed within a transaction. If you do not
+  issue a BEGIN command, then each individual statement has an implicit BEGIN and (if successful)
+  COMMIT wrapped around it.
+- Savepoints allow you to selectively discard parts of the transaction, while committing the
+  rest. After defining a savepoint with SAVEPOINT, you can if needed roll back to the savepoint with
+  ROLLBACK TO.
 

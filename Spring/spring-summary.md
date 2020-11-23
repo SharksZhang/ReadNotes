@@ -1,5 +1,13 @@
 # Spring
 
+什么是spring
+
+spring系统结构
+
+spring framework的子项目
+
+ioc功能设计到的目录
+
 ## ioc
 
 #### 1. 声明bean
@@ -19,8 +27,10 @@
 ##### 基于注解声明bean
 
 1. 元注解
+
 2. java based
-3. 
+
+   
 
 
 

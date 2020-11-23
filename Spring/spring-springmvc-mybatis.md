@@ -1,5 +1,9 @@
 # spring
 
+[toc]
+
+
+
 1    Spring概述
 
 ①Spring是一个开源框架
@@ -926,58 +930,7 @@ Controller组件中往往需要用到Service组件的实例，Service组件中�
 
 
 
-1. 通知方法执行顺序
-
-2. 通知方法运行时获取详细信息
-
-   1. 通知方法的参数列表传入JoinPion参数
-   2. JoinPoint中封装了对应的参数
-   3. 注解中的returning可以指定使用哪个参数接受返回值
-   4. Throwing 来接受异常，可以使用异常类来限定接受哪种异常
-
-3. 重用切入点定义
-
-    在AspectJ切面中，可以通过@Pointcut注解将一个切入点声明成简单的方法。切入点的方法体通常是空的，因为将切入点定义与应用程序逻辑混在一起是不合理的。
-
-4. 环绕通知
-
-   1. @Around 
-
-      1. l 环绕通知是所有通知类型中功能最为强大的，能够全面地控制连接点，甚至可以控制是否执行连接点。
-
-         l 对于环绕通知来说，连接点的参数类型必须是ProceedingJoinPoint。它是 JoinPoint的子接口，允许控制何时执行，是否执行连接点。
-
-         l 在环绕通知中需要明确调用ProceedingJoinPoint的proceed()方法来执行被代理的方法。如果忘记这样做就会导致通知被执行了，但目标方法没有被执行。
-
-         注意：环绕通知的方法需要返回目标方法执行之后的结果，即调用 joinPoint.proceed();的返回值，否则会出现空指针异常
-
-   2. 环绕通知的执行顺序
-
-      1. 环绕通知优先于普通通知的执行顺序
-
-5. 多切面的运行顺序
-
-切入点：
-
-1. 如果目标类实现了接口，则使用的是java原生的代理， 如果未实现接口，则使用cglib实现aop
-
-  execution([权限修饰符] [返回值类型] [简单类名/全类名] [方法名]([参数列表]))  
-
-第一个“*”代表任意修饰符及任意返回值。
-
-第二个“*”代表任意方法。
-
-“..”匹配任意数量、任意类型的参数。
-
-2. 切入点表达式的写法 ：1》使用*匹配字符  2.使用 * 匹配任意参数 3 .. 匹配所有参数个数的方法 ..匹配任意层级的路径
-
-3. 在AspectJ中，切入点表达式可以通过 “&&”、“||”、“!”等操作符结合起来。
-
-```
-execution (* *.add(int,..)) || execution(* *.sub(int,..))
-```
-
-##### 通知方法 的执行顺序
+##### 通知方法执行顺序
 
 ```
 try{
@@ -996,10 +949,227 @@ afterThrowing
 
 异常执行 before  => after  => afterThrowing
 
+## 
+
+##### 通知方法运行时获取详细信息
+
+1. 通知方法的参数列表传入JoinPion参数
+
+2. JoinPoint中封装了对应的参数
+
+3. 注解中的returning可以指定使用哪个参数接受返回值
+
+4. Throwing 来接受异常，可以使用异常类来限定接受哪种异常
+
+   ```
+       @AfterReturning(value = "execution(public  int com.ericzhang08.helloworld.aoptest.Calculator.*(int, int))", returning = "result")
+       public static void logReturn(int result) {
+           System.out.println("method return value:" + result);
+           System.out.println("method return");
+       }
+   
+       @AfterThrowing(value = "execution(public  int com.ericzhang08.helloworld.aoptest.Calculator.*(int, int))", throwing = "exception")
+       public static void logException(Exception exception) {
+           System.out.println("throw exception, exception is...");
+       }
+   
+   ```
+
+   
+
+##### 重用切入点定义
+
+ 在AspectJ切面中，可以通过@Pointcut注解将一个切入点声明成简单的方法。切入点的方法体通常是空的，因为将切入点定义与应用程序逻辑混在一起是不合理的。
+
+在编写AspectJ切面时，可以直接在通知注解中书写切入点表达式。但同一个切点表达式可能会在多个通知中重复出现。
+
+1. 声明一个空无返回值的方法
+2. 使用@Pointcut标记
+3. 在通知注解位置引用方法
+
+```
+@Aspect
+@Component
+public class LogUtil {
+    @Pointcut("execution(public  int com.ericzhang08.helloworld.aoptest.Calculator.*(int, int))")
+    public void pointcut(){}
+
+    @Before(value = "pointcut()")
+    public static void logStart(JoinPoint joinPoint) {
+        System.out.println("args:" + Arrays.toString(joinPoint.getArgs()));
+        System.out.println("method  start");
+    }
+
+    @AfterReturning(value = "pointcut()", returning = "result")
+    public static void logReturn(int result) {
+        System.out.println("method return value:" + result);
+        System.out.println("method return");
+    }
+
+    @AfterThrowing(value = "pointcut()", throwing = "exception")
+    public static void logException(Exception exception) {
+        System.out.println("throw exception, exception is...");
+    }
+
+    @After("pointcut()")
+    public static void logEnd() {
+        System.out.println("method end");
+    }
+}
+```
+
+
+
+##### 环绕通知
+
+1. @Around 
+
+   1. l 环绕通知是所有通知类型中功能最为强大的，能够全面地控制连接点，甚至可以控制是否执行连接点。
+
+      l 对于环绕通知来说，连接点的参数类型必须是ProceedingJoinPoint。它是 JoinPoint的子接口，允许控制何时执行，是否执行连接点。
+
+      l 在环绕通知中需要明确调用ProceedingJoinPoint的proceed()方法来执行被代理的方法。如果忘记这样做就会导致通知被执行了，但目标方法没有被执行。
+
+      注意：环绕通知的方法需要返回目标方法执行之后的结果，即调用 joinPoint.proceed();的返回值，否则会出现空指针异常
+
+      ```
+          @Around("pointcut()")
+          public static int logAround(ProceedingJoinPoint joinPoint) {
+              System.out.println("around start");
+              int result = 0;
+              try {
+                  result =  (int)joinPoint.proceed(joinPoint.getArgs());
+                  System.out.println("around after involk");
+      
+              } catch (Throwable throwable) {
+                  throwable.printStackTrace();
+              }
+              System.out.println("around after return");
+              return result;
+          }
+      ```
+
+      
+
+##### 多切面的运行顺序
+
+l  在同一个连接点上应用不止一个切面时，除非明确指定，否则它们的优先级是不确定的。
+
+l  切面的优先级可以通过实现Ordered接口或利用@Order注解指定。
+
+l  实现Ordered接口，getOrder()方法的返回值越小，优先级越高。
+
+l  若使用@Order注解，序号出现在注解中
+
+##### aop的使用场景
+
+1. 日志
+2. 权限验证
+3. 安全检查
+4. 事务控制
+
+## JDBC template
+
+#### 概述
+
+为了使JDBC更加易于使用，Spring在JDBC API上定义了一个抽象层，以此建立一个JDBC存取框架。
+
+作为Spring JDBC框架的核心，JDBC模板的设计目的是为不同类型的JDBC操作提供模板方法，通过这种方式，可以在尽可能保留灵活性的情况下，将数据库存取的工作量降到最低。
+
+#### 配置
+
+1. 使用springboot配置
+
+```
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/jdbc_template
+    username: root
+    platform: mysql
+    driver-class-name: com.mysql.jdbc.Driver
+    password:
+```
+
+2. 自动装配
+
+   ```
+   @Autowired
+   JdbcTemplate jdbcTemplate;
+   ```
+
+#### 增删改查
+
+```
+package com.yuzhang2.dbctemplatedemo;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@SpringBootTest
+class JdbctemplatedemoApplicationTests {
+    @Autowired
+    JdbcTemplate jdbcTemplate;
+
+    @Test
+    void contextLoads() {
+        System.out.println(jdbcTemplate);
+    }
+
+    //更新
+    @Test
+    void update() {
+        String sql = "INSERT INTO employee(emp_name,salary) VALUE(?,?)";
+        jdbcTemplate.update(sql, 1300.00);
+    }
+
+    @Test
+    void batchUpdate() {
+        String sql = "INSERT INTO employee(emp_name, salary) VALUE(?,?)";
+        List<Object[]> batchArgs = List.of(new Object[]{"zhangsan", 100},
+                new Object[]{"lisi", 200});
+        jdbcTemplate.batchUpdate(sql, batchArgs);
+    }
+
+    @Test
+    void queryForObject() {
+        String sql = "SELECT emp_id empId, emp_name empName, salary FROM employee WHERE emp_id=?";
+        Employee employee = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Employee.class), 1);
+        System.out.println(employee);
+    }
+
+    @Test
+    void queryForList() {
+        String sql = "SELECT emp_id empId, emp_name empName, salary FROM employee WHERE salary>?";
+        final List<Employee> query = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Employee.class), 1);
+        System.out.println(query);
+    }
+
+    @Test
+    void queryMaxSalary() {
+        String sql = "SELECT max(salary)  FROM employee ";
+        double max = jdbcTemplate.queryForObject(sql, Double.class);
+        System.out.println(max);
+    }
+
+
+}
+
+```
+
+
+
 ## 问题记录
 
 1. 构造器注入和属性注入的优劣，为什么推荐使用构造器注入
 2. ioc的源码是怎么实现的
 3. @springboottest注解做了哪些事情
 4. 如何获取springboot 的ioc container
+5. training 时进项一次画线任务
+6. Java 的依赖最后都会打到一个jar包中吗
 

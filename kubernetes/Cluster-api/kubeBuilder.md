@@ -237,9 +237,38 @@ Notice that we need a few more RBAC permissions -- since we’re creating and ma
 
 Now, we get to the heart of the controller -- the reconciler logic.
 
-```
 
-```
+
+The status subresource ignores changes to spec, so it’s less likely to conflict with any other updates, and can have separate permissions.
+
+
+
+**Once we’ve updated our status, we can move on to ensuring that the status of the world matches what we want in our spec.**
+
+##### set up with manager
+
+
+
+Finally, we’ll update our setup. In order to allow our reconciler to quickly look up Jobs by their owner, **we’ll need an index. We declare an index key that we can later use with the client as a pseudo-field name, and then describe how to extract the indexed value from the Job object.** The indexer will automatically take care of namespaces for us, so we just have to extract the owner name if the Job has a CronJob owner.
+
+Additionally, **we’ll inform the manager that this controller owns some Jobs,** so that it will automatically call Reconcile on the underlying CronJob when a Job changes, is deleted, etc.
+
+
+
+#### Implementing defaulting/validating webhooks
+
+1. Creating the webhook server.
+2. Ensuring the server has been added in the manager.
+3. Creating handlers for your webhooks.
+4. Registering each handler with a path in your server.
+
+
+
+
+
+We use the `webhook.Defaulter` interface to set defaults to our CRD. A webhook will automatically be served that calls this defaulting.
+
+he `ValidateCreate`, `ValidateUpdate` and `ValidateDelete` methods are expected to validate that its receiver upon creation, update and deletion respectively. 
 
 Question:
 
@@ -256,4 +285,4 @@ Question:
 4. what is schema
 5. Who involks reconcile method
 6. controller for watch usage
-
+7. 每个对象是如何继承于object
