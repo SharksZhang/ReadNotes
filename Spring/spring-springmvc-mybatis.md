@@ -1162,7 +1162,53 @@ class JdbctemplatedemoApplicationTests {
 
 ```
 
+#### 事务
 
+##### 声名式事务
+
+使用spring aop可以使用注解的方式自动完成编程式事务的功能
+
+##### aop：环绕通知
+
+//获取连接
+
+设置非自动提交
+
+目标代码执行
+
+正常提交
+
+异常回滚
+
+最终关闭
+
+
+
+事务切面为PlatFormTransactionManager
+
+![Screen Shot 2020-12-23 at 7.36.19 AM](spring-springmvc-mybatis.assets/Screen%20Shot%202020-12-23%20at%207.36.19%20AM.png)
+
+##### 编程式事务
+
+```
+TransactionFilter{
+try{
+//获取连接
+//设置非自动提交
+chain.dofilter();
+//提交
+}catch(Exception){
+//回滚
+}finally{
+关闭连接释放资源
+}
+}
+```
+
+##### 如何使用transactional
+
+1. 配置事务管理器进行事务控制
+2. 
 
 ## 问题记录
 

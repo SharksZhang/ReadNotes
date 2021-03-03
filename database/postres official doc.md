@@ -195,3 +195,12 @@ transaction from completing, then none of the steps affect the database at all
   rest. After defining a savepoint with SAVEPOINT, you can if needed roll back to the savepoint with
   ROLLBACK TO.
 
+##### Window Functions
+
+his is comparable to the type of calculation that can be done with an aggregate function.
+However, window functions do not cause rows to become grouped into a single output row like nonwindow aggregate calls would.
+
+A window function call always contains an OVER clause directly following the window function's
+name and argument(s
+
+This is what syntactically distinguishes it from a normal function or nonwindow aggregate

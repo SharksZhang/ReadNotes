@@ -4,11 +4,14 @@
 
 ### 1.1. Introduction to the Spring IoC Container and Beans
 
+ ioc：It is a process whereby objects define their dependencies (that is, the other objects they work with) only through constructor arguments, arguments to a factory method, or properties that are set on the object instance after it is constructed or returned from a factory method. The container then injects those dependencies when it creates the bean. 
+
 1. The `org.springframework.beans` and `org.springframework.context` packages are the basis for Spring Framework’s IoC container. The [`BeanFactory`](https://docs.spring.io/spring-framework/docs/5.3.0/javadoc-api/org/springframework/beans/factory/BeanFactory.html) interface provides an advanced configuration mechanism capable of managing any type of object. [`ApplicationContext`](https://docs.spring.io/spring-framework/docs/5.3.0/javadoc-api/org/springframework/context/ApplicationContext.html) is a sub-interface of `BeanFactory`. It adds:
    - Easier integration with Spring’s AOP features
    - Message resource handling (for use in internationalization)
    - Event publication
    - Application-layer specific contexts such as the `WebApplicationContext` for use in web applications.
+   - 
 
 ### 1.2. Container Overview
 
