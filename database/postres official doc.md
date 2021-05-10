@@ -204,3 +204,15 @@ A window function call always contains an OVER clause directly following the win
 name and argument(s
 
 This is what syntactically distinguishes it from a normal function or nonwindow aggregate
+
+
+
+##### Inheritance
+
+
+
+
+
+## The SQL Language
+
+### Chapter 4. SQL Syntax
