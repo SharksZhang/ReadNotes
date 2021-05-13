@@ -55,9 +55,32 @@ it is the more import
 、
 
 major
-
 .
 Our compony is a global sotware consultancy solving complex problems with technology. Our main services are sortware consulting. We help our clients to strengthen their core technology. Most of our clients are the leader compony in their iindustry. Taking into account our clients needs, we offer the software
+
+
+### lesson4 Your duty and your task
+
+- be familiar with knowledgeable
+- major job responsibility, a duty to be in charge of your job, so that you make decisions
+- need it done by .something has to be finished by a particular time. When do you need it done by? About this report, I need it done by Wednesday.
+- have a brief for . a short report about something. Attention, please. Mr. Woolf has a brief for the project.
+- How would you like sth. This expression is used to ask others' preference. How would you like your coffee?
+- work on.to spend time working in order to produce something. He has spent the last two years working on a book about education.
+- priority
+- parcel
+
+May I ask my major responsibilities are 
+Is there anything else I need to do 
+
+
+
+
+May I ask
+
+
+
+
 
 
 

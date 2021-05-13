@@ -4,25 +4,31 @@
 
 <!-- code_chunk_output -->
 
-- [Aws Regions and AZs](#aws-regions-and-azs)
-- [IAM(Identity and Access Management)](#iamidentity-and-access-management)
-  - [IAM Introduction](#iam-introduction)
-  - [IAM Federation](#iam-federation)
-- [IAM 101 Brain Dump](#iam-101-brain-dump)
-- [EC2](#ec2)
-  - [What is EC2](#what-is-ec2)
-  - [Introduction to Security Groups](#introduction-to-security-groups)
-  - [Security Groups Deeper Dive](#security-groups-deeper-dive)
-  - [Security Groups Good to know](#security-groups-good-to-know)
-  - [Elastic Ip](#elastic-ip)
-  - [EC2 User Data](#ec2-user-data)
-  - [EC2 Instance Lauch Types](#ec2-instance-lauch-types)
-  - [EC2 On Demand](#ec2-on-demand)
-  - [EC2 Reserved Instances](#ec2-reserved-instances)
-  - [EC2 Spot Instances](#ec2-spot-instances)
-  - [EC2 Dedicated Hosts](#ec2-dedicated-hosts)
-  - [EC2 Dedicated Instances](#ec2-dedicated-instances)
-  - [Which host is right for me?](#which-host-is-right-for-me)
+    - [Aws Regions and AZs](#aws-regions-and-azs)
+    - [IAM(Identity and Access Management)](#iamidentity-and-access-management)
+      - [IAM Introduction](#iam-introduction)
+      - [IAM Federation](#iam-federation)
+    - [IAM 101 Brain Dump](#iam-101-brain-dump)
+    - [EC2](#ec2)
+      - [What is EC2](#what-is-ec2)
+      - [Introduction to Security Groups](#introduction-to-security-groups)
+      - [Security Groups Deeper Dive](#security-groups-deeper-dive)
+      - [Security Groups Good to know](#security-groups-good-to-know)
+      - [Elastic Ip](#elastic-ip)
+      - [EC2 User Data](#ec2-user-data)
+      - [EC2 Instance Lauch Types](#ec2-instance-lauch-types)
+      - [EC2 On Demand](#ec2-on-demand)
+      - [EC2 Reserved Instances](#ec2-reserved-instances)
+      - [EC2 Spot Instances](#ec2-spot-instances)
+      - [EC2 Dedicated Hosts](#ec2-dedicated-hosts)
+      - [EC2 Dedicated Instances](#ec2-dedicated-instances)
+      - [Which host is right for me?](#which-host-is-right-for-me)
+- [lambda](#lambda)
+  - [serverless introduction](#serverless-introduction)
+    - [what is serverless](#what-is-serverless)
+    - [Serverless in AWS](#serverless-in-aws)
+  - [AWS Lambda overview](#aws-lambda-overview)
+    - [](#)
 )
 <!-- /code_chunk_output -->
 
@@ -219,3 +225,34 @@ Bring Your Own License)
 - Reserved: like planning ahead and if we plan to stay for a long time, we may get a good discount.
 - Spot instances: the hotel allows people to bid for the empty rooms and the highest bidder keeps the rooms. You can get kicked out at any time
 - Dedicated Hosts: We book an entire buildin- of the resort
+
+## lambda
+
+### serverless introduction
+
+#### what is serverless
+
+- Serverless is a new paradigm in which the developers don’t have to
+manage servers anymore…
+- They just deploy code
+- They just deploy… functions !
+- Initially... Serverless == FaaS (Function as a Service)
+- Serverless was pioneered by AWS Lambda but now also includes anything that’s managed: “databases, messaging, storage, etc.”
+- Serverless does not mean there are no servers…= 
+  it means you just don’t manage / provision / see them
+
+#### Serverless in AWS
+
+- AWS Lambda
+- DynamoDB
+- AWS Cognito
+- AWS API Gateway
+- Amazon S3
+- AWS SNS & SQS
+- AWS Kinesis Data Firehose
+- Aurora Serverless
+- Step Functions
+- Fargate
+
+### AWS Lambda overview
+#### 
