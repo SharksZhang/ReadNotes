@@ -28,7 +28,8 @@
     - [what is serverless](#what-is-serverless)
     - [Serverless in AWS](#serverless-in-aws)
   - [AWS Lambda overview](#aws-lambda-overview)
-    - [](#)
+    - [Why AWS Lambda](#why-aws-lambda)
+    - [Benefits of AWS Lambda](#benefits-of-aws-lambda)
 )
 <!-- /code_chunk_output -->
 
@@ -255,4 +256,32 @@ manage servers anymore…
 - Fargate
 
 ### AWS Lambda overview
-#### 
+
+#### Why AWS Lambda
+
+Amazon EC2
+
+- Virtual Servers in the Cloud
+- Limited by RAM and CPU
+- Continuously running
+- Scaling means intervention to add / remove servers
+
+Amazon Lambda
+
+- Limited by time - short executions
+- Virtual functions – no servers to manage!
+- Run on-demand
+- Scaling is automated!
+
+#### Benefits of AWS Lambda
+
+Easy Pricing:
+
+- Pay per request and compute time
+- Free tier of 1,000,000 AWS Lambda requests and 400,000 GBs of compute time
+- Integrated with the whole AWS suite of services
+- Integrated with many programming languages
+- Easy monitoring through AWS CloudWatch
+- Easy to get more resources per functions (up to 3GB of RAM!)
+- Increasing RAM will also improve CPU and network!
+

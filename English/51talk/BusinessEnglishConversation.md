@@ -39,7 +39,7 @@ and the compony own about 35% market share, which makes the company numbedr one 
 ### lesson3 About your business activities
 
 - competitors
-- at an affordable price This series of products are at an affordable price. low 
+- at an affordable price This series of products are at an affordable price. 
 - a large client base. The company has built up a large client base.
 - provide service to. We cannot provide service to customers in your city.
 - interative. Our English software is a piece of interactive educational software.
@@ -61,7 +61,7 @@ Our compony is a global sotware consultancy solving complex problems with techno
 
 ### lesson4 Your duty and your task
 
-- be familiar with knowledgeable
+- be familiar with。 knowledgeable
 - major job responsibility, a duty to be in charge of your job, so that you make decisions
 - need it done by .something has to be finished by a particular time. When do you need it done by? About this report, I need it done by Wednesday.
 - have a brief for . a short report about something. Attention, please. Mr. Woolf has a brief for the project.
@@ -77,6 +77,54 @@ Is there anything else I need to do
 
 
 May I ask
+
+
+### Lesson 5 Communication with your boss
+
+Expression
+
+- have a word with sb
+- give sb. direction on。try to control, manage, or give advice to sb. Please give us some direction on this product design.、
+- talk over. to discuss something serious or important with someone. I've got something to talk over with you.
+- someone is on track, someone is doing something as planned. The fighter is on track to become the world heavyweight boxing champion.
+- be reasonable. considerable fair and sensible. fair and sensible.I thought that question is reasonable.
+- proposal，a plan or suggestion which is made formally to an official person or group。The proposal should be handed in on time.
+- sale forecast， a description of what is likely to happen in the future, based on the sales information that you have now. We are already ahead of our sale forecast.
+- target, to aim at a particular group of persons or a place. Our products target teenagers.
+- revised，edit
+
+Sentences
+
+- May I have a word with you?
+- Have you read the proposal I sent you?
+- I have talked over the proposal with the assistant managers.
+- Would you give me some direction on the new product development plan?
+- The market research and sales forecast should be revised. Please hand in the proposal again by the end of next week.
+- I will revise the proposal and include your ideas.
+- After several rounds of market research and discussions with the Marketing Department
+- What are the key points?
+
+a polit way to say disagress
+
+Sorry to bother you. Are you available?.
+Cal I a work with you.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
