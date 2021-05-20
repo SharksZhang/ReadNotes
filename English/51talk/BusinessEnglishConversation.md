@@ -1,6 +1,8 @@
 # Business English Conversation
 
-## Lesson1 About you and your job 
+## Unit1 About you and your job 
+
+### lesson1
 
 - report to work
 - HR assistant
@@ -12,6 +14,12 @@
 
 - I feel very excited about my new job, Are we on the same team.
 - I have been an engineer for 4 years, I can't wait to start my work and get to know each of you.
+
+### practice 
+
+Hello, I am Yu, it is my first day here , Do you know where I can report to work.
+Here, I'm linda the hr assisstant, please follow me to complete the new hire process first
+I can't wait to start my work and get to know each of you 
 
 
 ### Lesson2 About your company
@@ -26,17 +34,25 @@
 - in total
 - leader
 - near by
-- close to 
+- close to
 
-We're a global software consultancy solving complex problems with technology
+#### Wrap up
 
-surronding,exchange, 
-it was consume by many people
+- Name
+- location 
+- surrondings
+- departments
+- international trade
+- overseas offices
+- Position
+- market share
 
-and the compony own about 35% market share, which makes the company numbedr one in the hardware industry
+Our compoany is  a global software consultancy. We are located in Xian, China. We have three floors in total, and the Toc and TD department are on the second floor. The AU departent is on ths sixth floor. Our company started with one office in Chicago.Now it has thirty overseas branches. it is a leader in the software consulting industry and does international trade worldwide. we own about 35% percent market share, which make us number one in the software industry
 
 
 ### lesson3 About your business activities
+
+#### words
 
 - competitors
 - at an affordable price This series of products are at an affordable price. 
@@ -45,18 +61,14 @@ and the compony own about 35% market share, which makes the company numbedr one 
 - interative. Our English software is a piece of interactive educational software.
 - take into account. Before applying for a job, you'd better take into account your own strengths and weaknesses.He said he will take my request into account.
 
+#### Wrap up
 
-what sets your product apart?
+- main product. Our main product is...
+- clients. We have a large client base.
+- competitors. Compared with our competitors..., We offer products at an affordable price
 
 
-
-our main products, our clients, 
-it is the more import
-、
-
-major
-.
-Our compony is a global sotware consultancy solving complex problems with technology. Our main services are sortware consulting. We help our clients to strengthen their core technology. Most of our clients are the leader compony in their iindustry. Taking into account our clients needs, we offer the software
+Our compony is a global sotware consultancy solving complex problems with technology. Our main services are sortware consulting. We help our clients to strengthen their core technology. Most of our clients are the leader compony in their industry. Taking into account our clients needs, we offer the whole functionaly team to help the dilivery software. Compared with our competitors, We offer professional consultand at an affordable price and delievery high quality software. In Chines we have a larege client base in various industries.
 
 
 ### lesson4 Your duty and your task
@@ -109,27 +121,25 @@ a polit way to say disagress
 Sorry to bother you. Are you available?.
 Cal I a work with you.
 
+## Unit2 Office talk 
 
+### lesson1 Help seeking
 
+- give sb. a hand, Could you give me a hand to lift this?
+- It's my first time doing sth, to express that the person has no experience in doing something
+- do sb. a favor, Could you do me a favor and tell Kelly I can't make it?
+- ask for a sick leave I have asked for a 3-day sick leave.
+- similar, I bought some new shoes which are very similar to a pair I had before.
+- a full schedule , I have a full schedule this week.
+- cover, to do the work that someone else usually does, because he/she is not there
 
+### sentences
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- Could you give me a hand?/Could you do me favor?
+- Sure, What is it.
+- Any suggestions/ Would you please
+- Sorry, does tomorrow work for you?
+- I appreciate your help
+- It is my pleasure. you are welcome
+- It is hectic
 
