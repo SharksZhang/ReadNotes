@@ -131,9 +131,9 @@ Cal I a work with you.
 - ask for a sick leave I have asked for a 3-day sick leave.
 - similar, I bought some new shoes which are very similar to a pair I had before.
 - a full schedule , I have a full schedule this week.
-- cover, to do the work that someone else usually does, because he/she is not there
+- cover, to do the work that someone else usually does, because he/she is not there. Would you please cover me for 3 hours in the morning
 
-### sentences
+#### sentences
 
 - Could you give me a hand?/Could you do me favor?
 - Sure, What is it.
@@ -143,3 +143,17 @@ Cal I a work with you.
 - It is my pleasure. you are welcome
 - It is hectic
 
+### lesson2 Information Sharing
+
+#### words
+
+- have no idea. I had no idea that we do so much business in North America.
+- local market.   From the graph in the report, we can conclude that we are not making much money in the local market.
+- sign up,Where can I sign up for that tour?
+
+#### sentences
+
+- Do you think the business is going well in the local market
+
+
+Company S do 20% of buisness in local market and 80% of business in overseas market. and the sale of products is 200 unit in Jan. it went up to 250 units in Feb and went down in MAR.
