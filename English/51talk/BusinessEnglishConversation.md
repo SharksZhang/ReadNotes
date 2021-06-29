@@ -1,3 +1,9 @@
+[toc]
+
+
+
+
+
 # Business English Conversation
 
 ## Unit1 About you and your job 
@@ -15,7 +21,7 @@
 - I feel very excited about my new job, Are we on the same team.
 - I have been an engineer for 4 years, I can't wait to start my work and get to know each of you.
 
-### practice 
+#### practice 
 
 Hello, I am Yu, it is my first day here , Do you know where I can report to work.
 Here, I'm linda the hr assisstant, please follow me to complete the new hire process first
@@ -157,3 +163,101 @@ Cal I a work with you.
 
 
 Company S do 20% of buisness in local market and 80% of business in overseas market. and the sale of products is 200 unit in Jan. it went up to 250 units in Feb and went down in MAR.
+
+
+### leesson 4 Invitation Making
+
+#### words
+
+- have a prior engagement
+- what a shame
+
+#### sentences
+
+- I heard that you are interested in social activities. Would you care to join our business club?
+- We gather together and focus on discussing the new business issues, models and books.
+- Can I get the address of your club?
+
+
+
+### lesson5 Free Chat with your colleagues
+
+deserve the praise
+Thank you for your compliment.
+please do not push you so hard.
+
+#### sentences
+
+- Is it that obvious? I stayed up late last night
+- Don't push yourself so hard. How is you project going?
+- It's going well, but I'm under abit of pressure, I still need to solve some problems
+- That is what work should be like.
+- I can handle it
+- you should relieve some stress, Hiking can relieve tension
+- My manager is satisfied with my work.
+- Congratulations, you deserve the praise, she must be impressed by you performance
+- Thank you for your compliment.
+- Deep Breathing reduces tension
+- your work is outstanding and leaves me with a good impression
+- Congratulations, I bet you are pleased with your final results
+- That is quite something 
+
+
+
+#### wrap-up 
+when you colleague looks bad
+    - how are you? you look tired
+    - I am under a bit pressure
+    - You should relieve some stress, Getting a message can help a lot
+    - I may try it.
+
+When your colleague looks good 
+    - you look great, Any good news?
+    - My boss is satisfied with my work
+    - she must be impressed by your performance
+    - Thank you for your compliment
+
+
+
+## Unit 3 Business Calls, Direct Contact
+
+
+### Lesson 3 Message leaving and taking
+
+####  Dialogue
+
+Niki:Hello. ABC Corporation. This is Niki Pitt speaking.
+
+Mr. Lennon:May I speak to Mr. Anderson?
+
+Niki:Please hold on for a minute I'm sorry. Mr. Anderson is not around at the moment. Would you like to leave a message?
+
+Mr. Lennon:Sure. This is Luke Lennon calling from Lightup Company. I want to talk about the contract.
+
+Niki:Sorry, I didn't catch that. Would you mind spelling your name for me?
+
+Mr. Lennon:L-U-K-E-L-E-N-N-O-N.
+
+Niki: **When would be a good time to return your call?**
+
+Mr. Lennon:He **can call me back** before 5 p.m. today.
+
+Niki:**What's the best number Mr. Anderson can reach you at?**
+
+Mr. Lennon:Mr. Anderson can call me by my office number before 5 p.m. He can also reach me at my cell phone number the whole day. Mr. Anderson has both of them.
+
+Niki:Alright. **Let me confirm all the information with you.** Mr. Lennon from Lightup Company called about the contract and asked to be called back. **Did I get it right?**
+
+Mr. Lennon:That's right. Thanks, bye!
+
+#### Words
+
+1. not around at the moment 
+2. leave a message 
+3. spell one's name 
+4. call sb. back 
+5. get it right: You should remember it, and what's more, you should get it right.
+6. return one's call. When will you return my call?
+7. reach sb. at. You can reach me at 6609823.
+8. Could you ask him to return my call when he gets back.
+9. let me confirm the information, Did i get it right.？

@@ -1,37 +1,4 @@
-[TOC]
-
-<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
-
-<!-- code_chunk_output -->
-
-    - [Aws Regions and AZs](#aws-regions-and-azs)
-    - [IAM(Identity and Access Management)](#iamidentity-and-access-management)
-      - [IAM Introduction](#iam-introduction)
-      - [IAM Federation](#iam-federation)
-    - [IAM 101 Brain Dump](#iam-101-brain-dump)
-    - [EC2](#ec2)
-      - [What is EC2](#what-is-ec2)
-      - [Introduction to Security Groups](#introduction-to-security-groups)
-      - [Security Groups Deeper Dive](#security-groups-deeper-dive)
-      - [Security Groups Good to know](#security-groups-good-to-know)
-      - [Elastic Ip](#elastic-ip)
-      - [EC2 User Data](#ec2-user-data)
-      - [EC2 Instance Lauch Types](#ec2-instance-lauch-types)
-      - [EC2 On Demand](#ec2-on-demand)
-      - [EC2 Reserved Instances](#ec2-reserved-instances)
-      - [EC2 Spot Instances](#ec2-spot-instances)
-      - [EC2 Dedicated Hosts](#ec2-dedicated-hosts)
-      - [EC2 Dedicated Instances](#ec2-dedicated-instances)
-      - [Which host is right for me?](#which-host-is-right-for-me)
-- [lambda](#lambda)
-  - [serverless introduction](#serverless-introduction)
-    - [what is serverless](#what-is-serverless)
-    - [Serverless in AWS](#serverless-in-aws)
-  - [AWS Lambda overview](#aws-lambda-overview)
-    - [Why AWS Lambda](#why-aws-lambda)
-    - [Benefits of AWS Lambda](#benefits-of-aws-lambda)
-)
-<!-- /code_chunk_output -->
+[toc]
 
 #### Aws Regions and AZs
 
@@ -226,6 +193,7 @@ Bring Your Own License)
 - Reserved: like planning ahead and if we plan to stay for a long time, we may get a good discount.
 - Spot instances: the hotel allows people to bid for the empty rooms and the highest bidder keeps the rooms. You can get kicked out at any time
 - Dedicated Hosts: We book an entire buildin- of the resort
+##### introduction to Security Groups
 
 ## lambda
 

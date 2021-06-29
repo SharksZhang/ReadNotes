@@ -1,0 +1,11 @@
+cluster-api aws: copy image
+
+
+clusterawsadm ami copy --source-region=us-east-2 --kubernetes-version=v1.20.6 --os=ubuntu-20.04 --region=us-west-1
+
+
+clusterctl  --kubeconfig=/var/folders/gs/kmpvk1p135v99nzc5_j60lrh0000gn/T/e2e-kind653477651  describe cluster clusterctl-upgrade-rdfodz
+
+kubectl  --kubeconfig=/var/folders/gs/kmpvk1p135v99nzc5_j60lrh0000gn/T/e2e-kind1596499459  get clusters --all-namespaces
+
+ kubectl  --kubeconfig=/var/folders/gs/kmpvk1p135v99nzc5_j60lrh0000gn/T/e2e-kind653477651  get cluster --all-namespaces
